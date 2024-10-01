@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "Lizzy Importer",
+    "description": "Exports information from triumph and allows user to import part information into Lizzy",
+    "version": "1.0",
+    "action": {
+        "default_popup": "lizzyImporter.html",
+        "default_icon": "hello_extensions.png"
+    },
+    "content_scripts": [
+        {
+            "js": [
+                "scripts/lizzyImporter.js",
+                "scripts/triumphExporter.js"
+            ],
+            "matches": [
+                "https://lizzy2.nizex.com/*"
+            ]
+        }
+    ],
+    "permissions": ["activeTab"]
+}

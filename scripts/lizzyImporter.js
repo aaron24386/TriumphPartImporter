@@ -145,14 +145,12 @@ function addParts() {
 		const partNumInput = document.getElementById('txt_partnumbertoadd');
 		partNumInput.value = partAndQuantity.partNumber;
 
-		const myPromise = new Promise((resolve, reject) => {
-			get_cv_itemslist_custom('Invoice', 'reg_itemlocate', 0, 2, 'txt_partnumbertoadd');
-			setTimeout(() => {
-				resolve("foo");
-			}, 300);
-		});
+        // This assumes there will always only be 1 matching item
+        const url = get_cv_itemslist_custom('Invoice', 'reg_itemlocate', 0, 2, 'txt_partnumbertoadd');
+        
+        getData(url).then((response) => {
+		    document.getElementById('reg_itemlocate').innerHTML = response; // Adds popup to select item
 
-		myPromise.then(() => {
 			const itemSelectorLink = document.querySelectorAll('[href^="Javascript:globalCallNavSave=false; InvItemSelect"]');
 			if (itemSelectorLink.length > 0) {
 				const splitLink = itemSelectorLink[0].href.split(', ');
@@ -160,6 +158,12 @@ function addParts() {
 				if (splitLink.length > 0) {
 					const itemId = splitLink[1];
 
+                    /* 
+                        InvItemSelect does not display immediately qty input immediately
+                        It calls call_cs_invoice_items
+                        Which calls get_cv_invoice_itembins
+                        Which calls call_cv_invoice_itembins which is what adds the qty input
+                    */
 					InvItemSelect('reg_itemlocate', itemId, false, false, itemId);
 
 					const partQuantityInput = document.getElementById('txt_qtytoadd469')
@@ -172,8 +176,7 @@ function addParts() {
 	}
 }
 
-async function getData() {
-	const url = 'inventory/cv_itemslist.php?kit=2&placement=reg_itemlocate&count=0&page=Locate&vendor=&supplier=0&itemno=T2043181&generic=&serial=&rad_generic=1&active=true&nstock=false&comingfrom=Invoice&usescanner=false&itemnumberfieldname=txt_partnumbertoadd&poid=0&binname=&asin=&locationid=0&kitID=0&invoiceid=24769&contactid=119970';
+async function getData(url) {
 	try {
 		const response = await fetch(url);
 		if (!response.ok) {
@@ -181,174 +184,11 @@ async function getData() {
 		}
 
 		const text = await response.text();
-		console.log(text);
+        return text;
+        // TODO: only want 1 request at a time, their logic tries to prevent this with globalGetItemList
 	} catch (error) {
+        // TODO: extension probably has api to display error message better
 		console.error(JSON.stringify(error.message));
-	}
-}
-
-var comm_cv_itemslist = new onConnect(false, false, call_cv_itemslist);
-
-function onConnect(response, placement, callfunc, misc, misc2, misc3, misc4, misc5) {
-	this.response = response;
-	this.placement = placement;
-	this.callfunc = callfunc;
-	this.misc = misc;
-	this.misc2 = misc2
-	this.misc3 = misc3;
-	this.misc4 = misc4;
-	this.misc5 = misc5;
-}
-
-function call_cv_itemslist() {
-	//TKS 08.24.2015 #72329 reset this index var if locating another item
-	addItemBinQtyIndex = -1;//declared in js_master.js
-	//12.21.2010 jss - if using a scanner and we only get one result we'll simulate the user clicking the "select" icon and not even show the contorl
-	if (comm_cv_itemslist.response.substring(0, 7) == 'barcode') {
-		var temp = comm_cv_itemslist.response.split('~');
-		eval(temp[1]);
-		var itemnumberfieldname = comm_cv_itemslist.misc1;
-		document.getElementById(itemnumberfieldname).select();
-
-	}
-	else {
-		//06.22.2016 jss - ( 87686 ) added error sound if on the new shipping control.
-		//this happens when a part is either scanned, or hand entered, and we either
-		//get multiple results, or none at all.  This alerts the shipper to look at the
-		//screen
-		if (comm_cv_itemslist.misc2 == 'ShippingFormNew' && document.getElementById('chk_usescanner').checked)
-			soundManager.play('ScanError');
-
-		document.getElementById(comm_cv_itemslist.placement).innerHTML = comm_cv_itemslist.response;
-
-		//TKS 08.18.2015 #72329 adding arrow key navigation
-		//#########################################
-		//#########################################
-		//this starts the index off before the first element
-		var displayBoxIndex = -1;
-		//our highlight class
-		var cssClass = "display_box_hover";
-		globalCallNavSave = true;
-		//TKS 02.05.2020 #163841 changed to on() rather than keydown() as keydown() depreciated in latest jQuery
-		$(document).on("keydown", function (e) {
-			//make sure e is the correct browser supported event
-			//some browsers do not support keyCode and jQuery uses which
-			e = e || window.event;
-			switch (e.which || e.keyCode) {
-				case 38://up arrow
-					//TKS 06.01.2017 #105188
-					//prevent this behavior anywhere else if the results window is empty
-					if (document.getElementById(comm_cv_itemslist.placement).innerHTML == '') {
-						globalCallNavSave = false;
-						return;
-					}
-					//e.preventDefault();//uncomment if you want to prevent the scroll behavior
-					Navigate(-1);
-					break;
-				case 40://down arrow
-					//TKS 06.01.2017 #105188
-					//prevent this behavior anywhere else if the results window is empty
-					if (document.getElementById(comm_cv_itemslist.placement).innerHTML == '') {
-						globalCallNavSave = false;
-						return;
-					}
-					//e.preventDefault();//uncomment if you want to prevent the scroll behavior
-					Navigate(1);
-					break;
-				case 13://enter key
-					//TKS 06.01.2017 #105188
-					//prevent this behavior anywhere else if the results window is empty
-					if (document.getElementById(comm_cv_itemslist.placement).innerHTML == '') {
-						globalCallNavSave = false;
-						return;
-					}
-					if (globalCallNavSave) {
-						Navigate(2);
-						e.preventDefault();
-					}
-					break;
-				default:
-					return; // allow other keys to be handled
-			}
-		});
-
-		var Navigate = function (diff) {
-			//this next line is very important as the onkeyup event in most text fields are doing 
-			//a hot search which recalls the grid we are trying to navigate through. The onkey event
-			//of the arrow keys recall the grid over and over and it resets everything so we MUST take focus
-			//out of the active field so our code can work.
-			document.activeElement.blur();
-
-			//this holds our collection/object
-			var oBoxCollection = $(".display_box");
-			//enter here if they hit enter
-			if (diff > 1) {
-				try {
-					//GHH wanted to scroll back to the top of the control if you have scrolled down
-					//in the item list. If in the overlay then grab the current position of the control
-					//as you could have scrolled way down an invoice.
-					if (document.getElementById('video_overlay').innerHTML != '') {
-						//grab the current margin as it is built dynamically
-						var scroll = $(".overlay_tbl").css('margin-top');
-						//strip off the 'px' so we have just the number
-						scroll = scroll.replace("px", "");
-						scrollTo(0, scroll);
-					}
-					else
-						scrollTo(0, 0);
-
-					eval(document.getElementById('hid_action' + displayBoxIndex).value);
-					//after they hit enter, reset our index
-					displayBoxIndex = -1;
-					globalCallNavSave = false;
-				} catch (err) { }
-
-
-				//after they hit enter we have special conditions that may apply depending
-				//on where you are in lizzy. If on add item to po for example GHH wants the
-				//focus to go back into the item# field. If on invoice add item we are going to try
-				//and put focus into the qty field and allow the + and - keys to increase or decrease the qty
-				switch (comm_cv_itemslist.misc2) // comingfrom;
-				{
-					case 'POAddItem':
-						try {
-							document.getElementById(comm_cv_itemslist.itemnumberfieldname).focus()
-						}
-						catch (err) { }
-						break;
-					default:
-						break;
-				}
-			}
-			//enter here if clicking on the arrow keys
-			else {
-				//this is the index we are working with in our array of rows we are cycling through
-				displayBoxIndex += diff;
-				//if the index we are on is >= to the length of our collection then we have
-				//reached the bottom. Reset so we can start from the top again
-				if (displayBoxIndex >= oBoxCollection.length)
-					displayBoxIndex = 0;
-				//if we reached the top, set it to start at the bottom 
-				if (displayBoxIndex < 0)
-					displayBoxIndex = oBoxCollection.length - 1;
-
-				//remove the highlight class from the entire collection
-				oBoxCollection.removeClass(cssClass);
-				//add the class to the current ( this ) active class index
-				$(".display_box").eq(displayBoxIndex).addClass(cssClass);
-			}
-		}
-		//#########################################
-		//#########################################
-	}
-
-	//12.21.2011 ghh - reset our global flag so we can go retrieve another set if necessary
-	globalGetItemList = false;
-
-	//12.21.2011 ghh - now see if we need to recall the get because of another search that got interrupted
-	if (globalGetItemListTrue == true) {
-		globalGetItemListTrue = false;
-		get_cv_itemslist(comm_cv_itemslist.comingfrom, comm_cv_itemslist.placement, comm_cv_itemslist.count, comm_cv_itemslist.is_kit, comm_cv_itemslist.itemnumberfieldname);
 	}
 }
 
@@ -507,56 +347,38 @@ function get_cv_itemslist_custom(comingfrom, placement, count, is_kit, itemnumbe
 	//TKS 08.08.2024 #274082
 	serial = encodeURIComponent(serial);
 
-	//12.17.2010 jss - added comingfrom to the path
-	//09.14.2022 tam - 216555 adding ASIN
-	var path = 'inventory/cv_itemslist.php?kit=' + is_kit +
-		'&placement=' + placement +
-		'&count=' + count +
-		'&page=' + document.getElementById('global_inv_list').value +
-		'&vendor=' + vendor +
-		'&supplier=' + supplier +
-		'&itemno=' + itemno +
-		'&generic=' + generic +
-		'&serial=' + serial +
-		'&rad_generic=' + rad_generic +
-		'&active=' + active +
-		'&instock=' + instock +
-		'&comingfrom=' + comingfrom +
-		'&usescanner=' + usescanner +
-		'&itemnumberfieldname=' + itemnumberfieldname +
-		'&poid=' + poid +
-		'&binname=' + binname +
-		'&asin=' + ASIN;
-
+    const locationId = (comingfrom == 'RentalSchedule') ? document.getElementById('drp_location').value : 0;
 	//TKS 10.17.2016 #92950 adding location drop list if in rental schedule control
 	if (comingfrom == 'RentalSchedule')
 		path = path + '&locationid=' + document.getElementById('drp_location').value;
 	else
 		path = path + '&locationid=0';
 
-	//TKS 01.02.2014 #45274 passing the kitid over if working with create kit
-	//so we can exclude items already on kits set to OrderByMaster
-	if (comingfrom == 'AddToKit')//create kit
-		path = path + '&kitID=' + kitID;
-	else
-		path = path + '&kitID=0';
-
-	//08.11.2011 jss - pass down the invoiceid used for getting location for showing qty on hand
-	path = path + '&invoiceid=' + globalInvoiceID;
-
-	//TKS 06.03.2014 #52713 passing over contactid now that we can link bins to a contact.
-	path = path + '&contactid=' + document.getElementById('global_contactid').value;
-
-	comm_cv_itemslist.placement = placement;
-	comm_cv_itemslist.callfunc = call_cv_itemslist;
-
-	//12.21.2010 jss -	
-	comm_cv_itemslist.misc1 = itemnumberfieldname;
-	//TKS 08.20.2015 #72329 so we know where we are during the arrow navigation below
-	//in our callback()
-	comm_cv_itemslist.misc2 = comingfrom;
-
-
+	//12.17.2010 jss - added comingfrom to the path
+	//09.14.2022 tam - 216555 adding ASIN
+	var path = `inventory/cv_itemslist.php?kit=${is_kit}
+		&placement=${placement}
+		&count=${count}
+		&page=${document.getElementById('global_inv_list').value}
+		&vendor=${vendor}
+		&supplier=${supplier}
+		&itemno=${itemno}
+		&generic=${generic}
+		&serial=${serial}
+		&rad_generic=${rad_generic}
+		&active=${active}
+		&instock=${instock}
+		&comingfrom=${comingfrom}
+		&usescanner=${usescanner}
+		&itemnumberfieldname=${itemnumberfieldname}
+		&poid=${poid}
+		&binname=${binname}
+		&asin=${ASIN}
+        &locationid=${locationId}
+        &kitID=0
+        &invoiceid=${globalInvoiceID}
+        &contactid=${document.getElementById('global_contactid').value}
+    `
 	// AP: Path
 	/*
 		'inventory/cv_itemslist.php?kit=2&placement=reg_itemlocate&count=0&page=Locate&
@@ -564,7 +386,30 @@ function get_cv_itemslist_custom(comingfrom, placement, count, is_kit, itemnumbe
 			instock=false&comingfrom=Invoice&usescanner=false&itemnumberfieldname=txt_partnumbertoadd&
 			poid=0&binname=&asin=&locationid=0&kitID=0&invoiceid=24769&contactid=119970'
 	*/
-	ajax_send(path, true, 'GET', null, comm_cv_itemslist);
+	return path;
+}
+
+function getNewInvoicePartInfo_Custom(isAlsoSell, ChildItemID) {
+    if (isAlsoSell == undefined)
+        isAlsoSell = false;
+    if (ChildItemID == undefined)
+        ChildItemID = 0;
+
+    //TKS 12.09.2020 #183305 I have to change the name/id of this field because the 'Add new part' link that pulls up
+    //the add item control from inventory also has a hid_itemid and breaks because we have 2 idental hidden fields
+    if (document.getElementById('hid_invoice_itemid').value > 0)
+        var itemid = document.getElementById('hid_invoice_itemid').value;
+    else
+        var itemid = 0;
+
+    const partNumber = encodeURIComponent(document.getElementById("txt_partnumbertoadd").value);
+    const contactId = document.getElementById('global_contactid').value;
+
+    //11.09.2011 jss - added encodeURIComponent cuz salina has pound signs in their part #'s
+    const path = `invoicing/newinvoice/cs_invoice_items.php?partnumber=${partNumber}&contactid=${contactId}&itemid=${itemid}
+        &invtype=invoice_type&ChildItemID=${ChildItemID}&invoiceid=${globalInvoiceID}`;
+
+    return path;
 }
 
 

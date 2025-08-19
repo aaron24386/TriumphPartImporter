@@ -1,6 +1,5 @@
-import { sampleFunction } from '@src/sampleFunction';
+import { exportBasket } from '@src/exporter';
 
 console.log('content script loaded');
 
-// Shows how to call a function defined in another module
-sampleFunction();
+exportBasket();

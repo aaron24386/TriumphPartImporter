@@ -1,11 +1,11 @@
 {
   "extensionDescription": {
     "description": "Extension description",
-    "message": "Chrome extension boilerplate developed with Vite, React and Typescript"
+    "message": "Exports information from triumph and allows user to import part information into Lizzy"
   },
   "extensionName": {
     "description": "Extension name",
-    "message": "Chrome extension boilerplate"
+    "message": "Lizzy Importer"
   },
   "toggleTheme": {
     "message": "Toggle theme"

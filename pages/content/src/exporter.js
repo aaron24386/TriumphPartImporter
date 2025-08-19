@@ -1,6 +1,5 @@
 import Basket from './basket';
 
-// AP: TODO: none of this works any more because the site was updated.
 export const exportBasket = () => {
   /**
    * Export Button Logic: want to update this to add the button to where the basket name
@@ -21,14 +20,15 @@ export const exportBasket = () => {
    * TODO: Check if this element was added, possible just move to an element that always exists
    */
 
-  function collectBasketInformation() {
-    // TODO: doesn't appeart to exist any more
+  async function collectBasketInformation() {
+    // TODO: there isn't a basket id any more so needs to be updated to not incorporate this.
+    // TODO: this means that I potentially need to handle ensuring baskets are unique. Probably not important till later date
     // const basketId = document.querySelector("#ctl00_ContentPlaceHolder1_txtBasketID")?.textContent;
-    const basketName = document.querySelector('#name')?.value;
-    const basket = new Basket({ id: basketId, name: basketName });
+    const basketName = document.querySelector('#name')?.value.trim();
+    const basket = new Basket({ name: basketName });
 
-    if (!basketName || !basketId) {
-      alert('Basket name is required to export');
+    if (!basketName) {
+      alert('Basket name are required to export');
       return;
     }
 
@@ -42,20 +42,22 @@ export const exportBasket = () => {
       if (rowCount > 0) {
         for (var i = 0; i < rowCount; i++) {
           const quantity = parseInt(quantityRows[i].value);
-          const partNumber = partRows[i]?.textContent;
+          const number = partRows[i]?.textContent;
           basket.addPart({
-            partNumber,
+            number,
             quantity,
             description: descriptionRows[i]?.textContent,
           });
         }
 
-        const baskets = {};
-        baskets[basketId] = basket;
-        chrome.storage.local.set(baskets).then(() => {
-          // Update to be a popup, maybe this comes from the extension instead?
-          alert(`${basketName} saved to extension`);
-        });
+        let { baskets } = await chrome.storage.local.get('baskets');
+        console.log(baskets);
+        baskets ??= {};
+        baskets[basketName] = basket;
+        await chrome.storage.local.set({ baskets: baskets });
+
+        // Update to be a popup, maybe this comes from the extension instead?
+        alert(`${basketName} saved to extension`);
       } else {
         // Update to be a popup, maybe this comes from the extension instead?
         alert(`Please add parts to the basket before trying to export`);

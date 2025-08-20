@@ -1,150 +1,266 @@
-<img src="src/assets/img/icon-128.png" width="64"/>
+<div align="center">
 
-# Chrome Extension (MV3) Boilerplate with React 18 and Webpack 5
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/99cb6303-64e4-4bed-bf3f-35735353e6de" />
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/a5dbf71c-c509-4c4f-80f4-be88a1943b0a" />
+    <img alt="Logo" src="https://github.com/user-attachments/assets/99cb6303-64e4-4bed-bf3f-35735353e6de" />
+</picture>
 
-[![npm](https://img.shields.io/npm/v/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
-[![npm-download](https://img.shields.io/npm/dw/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
-[![npm](https://img.shields.io/npm/dm/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
+![](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black)
+![](https://img.shields.io/badge/Typescript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![](https://badges.aleen42.com/src/vitejs.svg)
 
-## Announcements
+![GitHub action badge](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/actions/workflows/build-zip.yml/badge.svg)
+![GitHub action badge](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/actions/workflows/lint.yml/badge.svg)
 
-- Recently updated from **[React](https://reactjs.org)** ~~17~~ to **18**!
-- **_This boilerplate adopts [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-overview/)!_**
-  - For V2 users, please check out the [manifest-v2](https://github.com/lxieyang/chrome-extension-boilerplate-react/tree/manifest-v2) branch, or use version [3.x](https://www.npmjs.com/package/chrome-extension-boilerplate-react/v/3.3.0).
-  - Check out the [Manifest V3 Migration Guide](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/).
-- Recently added [devtools](https://developer.chrome.com/docs/extensions/mv3/devtools/) Support! Thanks [GeekaholicLin](https://github.com/lxieyang/chrome-extension-boilerplate-react/issues/17)!
-- Recently updated from **[Webpack Dev Server](https://webpack.js.org/configuration/dev-server/)** ~~3.x~~ to **4.x** and **[Webpack](https://webpack.js.org/)** ~~4~~ to **5**!
-- Recently added [TypeScript](https://www.typescriptlang.org/) Support!
+<img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/Jonghakseo/chrome-extension-boilerplate-react-viteFactions&count_bg=%23#222222&title_bg=%23#454545&title=😀&edge_flat=true" alt="hits"/>
+<a href="https://discord.gg/4ERQ6jgV9a" target="_blank"><img src="https://discord.com/api/guilds/1263404974830915637/widget.png"/></a>
+
+> This boilerplate
+> has [Legacy version](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/tree/legacy)
+
+</div>
+
+> [!NOTE]
+> This project is listed in the [Awesome Vite](https://github.com/vitejs/awesome-vite)
+
+> [!TIP]
+> Share storage state between all pages
+>
+> https://github.com/user-attachments/assets/3b8e189f-6443-490e-a455-4f9570267f8c
+
+## Table of Contents
+
+- [Intro](#intro)
+- [Features](#features)
+- [Structure](#structure)
+    - [ChromeExtension](#structure-chrome-extension)
+    - [Packages](#structure-packages)
+    - [Pages](#structure-pages)
+- [Getting started](#getting-started)
+    - [Chrome](#getting-started-chrome)
+    - [Firefox](#getting-started-firefox)
+- [Install dependency](#install-dependency)
+    - [For root](#install-dependency-for-root)
+    - [For module](#install-dependency-for-module)
+- [Environment variables](#env-variables)
+    - [Add new](#env-variables-new)
+    - [Set via CLI](#env-variables-cli-set)
+- [Community](#community)
+- [Reference](#reference)
+- [Star History](#star-history)
+- [Contributors](#contributors)
+
+## Intro
+
+This boilerplate helps you create Chrome/Firefox extensions using React and Typescript. It improves
+the build speed and development experience by using Vite and Turborepo.
 
 ## Features
 
-This is a basic Chrome Extensions boilerplate to help you write modular and modern Javascript code, load CSS easily and [automatic reload the browser on code changes](https://webpack.github.io/docs/webpack-dev-server.html#automatic-refresh).
-
-This boilerplate is updated with:
-
-- [Chrome Extension Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-overview/)
-- [React 18](https://reactjs.org)
-- [Webpack 5](https://webpack.js.org/)
-- [Webpack Dev Server 4](https://webpack.js.org/configuration/dev-server/)
-- [React Refresh](https://www.npmjs.com/package/react-refresh)
-- [react-refresh-webpack-plugin](https://github.com/pmmmwh/react-refresh-webpack-plugin)
-- [eslint-config-react-app](https://www.npmjs.com/package/eslint-config-react-app)
-- [Prettier](https://prettier.io/)
+- [React19](https://reactjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
+- [Tailwindcss](https://tailwindcss.com/)
+- [Vite](https://vitejs.dev/) with [Rollup](https://rollupjs.org/)
+- [Turborepo](https://turbo.build/repo)
+- [Prettier](https://prettier.io/)
+- [ESLint](https://eslint.org/)
+- [Chrome Extensions Manifest Version 3](https://developer.chrome.com/docs/extensions/mv3/intro/)
+- [Custom i18n package](/packages/i18n/)
+- [Custom HMR (Hot Module Rebuild) plugin](/packages/hmr/)
+- [End-to-end testing with WebdriverIO](https://webdriver.io/)
 
-This boilerplate is heavily inspired by and adapted from [https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate), with additional support for React 18 features, Webpack 5, and Webpack Dev Server 4.
+## Getting started
 
-Please open up an issue to nudge me to keep the npm packages up-to-date. FYI, it takes time to make different packages with different versions work together nicely.
+1. When you're using Windows run this:
+    - `git config --global core.eol lf`
+    - `git config --global core.autocrlf input`
 
-## Installing and Running
+   **This will set the EOL (End of line) character to be the same as on Linux/macOS. Without this, our bash script won't
+   work, and you will have conflicts with developers on Linux/macOS.**
+2. Clone this repository.( ```git clone https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite``` )
+3. Ensure your node version is >= than in `.nvmrc` file, recommend to
+   use [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#intro)
+4. Edit `/packages/i18n/locales/`{your locale(s)}/`messages.json`
+5. In the objects `extensionDescription` and `extensionName`, change the `message` fields (leave `description` alone)
+6. In `/.package.json`, change the `version` to the desired version of your extension.
+7. Install pnpm globally: `npm install -g pnpm` (ensure your node version >= 22.12.0)
+8. Run `pnpm install`
 
-### Procedures:
+Then, depending on the target browser:
 
-1. Check if your [Node.js](https://nodejs.org/) version is >= **18**.
-2. Clone this repository.
-3. Change the package's `name`, `description`, and `repository` fields in `package.json`.
-4. Change the name of your extension on `src/manifest.json`.
-5. Run `npm install` to install the dependencies.
-6. Run `npm start`
-7. Load your extension on Chrome following:
-   1. Access `chrome://extensions/`
-   2. Check `Developer mode`
-   3. Click on `Load unpacked extension`
-   4. Select the `build` folder.
-8. Happy hacking.
+### For Chrome: <a name="getting-started-chrome"></a>
 
-## Structure
+1. Run:
+    - Dev: `pnpm dev` (on Windows, you should run as administrator;
+      see [issue#456](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/issues/456))
+    - Prod: `pnpm build`
+2. Open in browser - `chrome://extensions`
+3. Check - <kbd>Developer mode</kbd>
+4. Click - <kbd>Load unpacked</kbd> in the upper left corner
+5. Select the `dist` directory from the boilerplate project
 
-All your extension's code must be placed in the `src` folder.
+### For Firefox: <a name="getting-started-firefox"></a>
 
-The boilerplate is already prepared to have a popup, an options page, a background page, and a new tab page (which replaces the new tab page of your browser). But feel free to customize these.
+1. Run:
+    - Dev: `pnpm dev:firefox`
+    - Prod: `pnpm build:firefox`
+2. Open in browser - `about:debugging#/runtime/this-firefox`
+3. Click - <kbd>Load Temporary Add-on...</kbd> in the upper right corner
+4. Select the `./dist/manifest.json` file from the boilerplate project
 
-## TypeScript
+> [!NOTE]
+> In Firefox, you load add-ons in temporary mode. That means they'll disappear after each browser close. You have to
+> load the add-on on every browser launch.
 
-This boilerplate now supports TypeScript! The `Options` Page is implemented using TypeScript. Please refer to `src/pages/Options/` for example usages.
+## Install dependency for turborepo: <a name="install-dependency"></a>
 
-## Webpack auto-reload and HRM
+### For root: <a name="install-dependency-for-root"></a>
 
-To make your workflow much more efficient this boilerplate uses the [webpack server](https://webpack.github.io/docs/webpack-dev-server.html) to development (started with `npm start`) with auto reload feature that reloads the browser automatically every time that you save some file in your editor.
+1. Run `pnpm i <package> -w`
 
-You can run the dev mode on other port if you want. Just specify the env var `port` like this:
+### For module: <a name="install-dependency-for-module"></a>
 
-```
-$ PORT=6002 npm run start
-```
+1. Run `pnpm i <package> -F <module name>`
 
-## Content Scripts
+`package` - Name of the package you want to install e.g. `nodemon` \
+`module-name` - You can find it inside each `package.json` under the key `name`, e.g. `@extension/content-script`, you
+can use only `content-script` without `@extension/` prefix
 
-Although this boilerplate uses the webpack dev server, it's also prepared to write all your bundles files on the disk at every code change, so you can point, on your extension manifest, to your bundles that you want to use as [content scripts](https://developer.chrome.com/extensions/content_scripts), but you need to exclude these entry points from hot reloading [(why?)](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate/issues/4#issuecomment-261788690). To do so you need to expose which entry points are content scripts on the `webpack.config.js` using the `chromeExtensionBoilerplate -> notHotReload` config. Look the example below.
+## How do I disable modules I'm not using?
 
-Let's say that you want use the `myContentScript` entry point as content script, so on your `webpack.config.js` you will configure the entry point and exclude it from hot reloading, like this:
-
-```js
-{
-  …
-  entry: {
-    myContentScript: "./src/js/myContentScript.js"
-  },
-  chromeExtensionBoilerplate: {
-    notHotReload: ["myContentScript"]
-  }
-  …
-}
-```
-
-and on your `src/manifest.json`:
-
-```json
-{
-  "content_scripts": [
-    {
-      "matches": ["https://www.google.com/*"],
-      "js": ["myContentScript.bundle.js"]
-    }
-  ]
-}
-```
-
-## Intelligent Code Completion
-
-Thanks to [@hudidit](https://github.com/lxieyang/chrome-extension-boilerplate-react/issues/4)'s kind suggestions, this boilerplate supports chrome-specific intelligent code completion using [@types/chrome](https://www.npmjs.com/package/@types/chrome).
-
-## Packing
-
-After the development of your extension run the command
-
-```
-$ NODE_ENV=production npm run build
+```bash
+$ pnpm module-manager
 ```
 
-Now, the content of `build` folder will be the extension ready to be submitted to the Chrome Web Store. Just take a look at the [official guide](https://developer.chrome.com/webstore/publish) to more infos about publishing.
+Read: [Module Manager](packages/module-manager/README.md)
 
-## Secrets
+## Environment variables
 
-If you are developing an extension that talks with some API you probably are using different keys for testing and production. Is a good practice you not commit your secret keys and expose to anyone that have access to the repository.
+Read: [Env Documentation](packages/env/README.md)
 
-To this task this boilerplate import the file `./secrets.<THE-NODE_ENV>.js` on your modules through the module named as `secrets`, so you can do things like this:
+## Boilerplate structure <a name="structure"></a>
 
-_./secrets.development.js_
+### Chrome extension <a name="structure-chrome-extension"></a>
 
-```js
-export default { key: '123' };
-```
+The extension lives in the `chrome-extension` directory and includes the following files:
 
-_./src/popup.js_
+- [`manifest.ts`](chrome-extension/manifest.js) - script that outputs the `manifest.json`
+- [`src/background`](chrome-extension/src/background) - [background script](https://developer.chrome.com/docs/extensions/mv3/background_pages/)
+  (`background.service_worker` in manifest.json)
+- [`public`](chrome-extension/public/) - icons referenced in the manifest; content CSS for user's page injection
 
-```js
-import secrets from 'secrets';
-ApiCall({ key: secrets.key });
-```
+> [!IMPORTANT]
+> To facilitate development, the boilerplate is configured to "Read and change all your data on all websites".
+> In production, it's best practice to limit the premissions to only the strictly necessary websites. See
+> [Declaring permissions](https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions)
+> and edit `manifest.js` accordingly.
 
-:point_right: The files with name `secrets.*.js` already are ignored on the repository.
+### Pages <a name="structure-pages"></a>
 
-## Resources:
+Code that is transpiled to be part of the extension lives in the [pages](pages/) directory.
 
-- [Webpack documentation](https://webpack.js.org/concepts/)
-- [Chrome Extension documentation](https://developer.chrome.com/extensions/getstarted)
+- [
+  `content`](pages/content/) - [content scripts](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts)
+  (`content_scripts` in manifest.json)
+- [`content-ui`](pages/content-ui) - React UI rendered in the current page (you can see it at the very bottom when you
+  get started)
+  (`content_scripts` in manifest.json)
+- [
+  `content-runtime`](pages/content-runtime/src/) - [injected content scripts](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts#functionality);
+  this can be injected from `popup` like standard `content`
+- [
+  `devtools`](pages/devtools/) - [extend the browser DevTools](https://developer.chrome.com/docs/extensions/how-to/devtools/extend-devtools#creating)
+  (`devtools_page` in manifest.json)
+- [
+  `devtools-panel`](pages/devtools-panel/) - [DevTools panel](https://developer.chrome.com/docs/extensions/reference/api/devtools/panels)
+  for [devtools](pages/devtools/src/index.ts)
+- [
+  `new-tab`](pages/new-tab/) - [override the default New Tab page](https://developer.chrome.com/docs/extensions/develop/ui/override-chrome-pages)
+  (`chrome_url_overrides.newtab` in manifest.json)
+- [`options`](pages/options/) - [options page](https://developer.chrome.com/docs/extensions/develop/ui/options-page)
+  (`options_page` in manifest.json)
+- [`popup`](pages/popup/) - [popup](https://developer.chrome.com/docs/extensions/reference/api/action#popup) shown when
+  clicking the extension in the toolbar
+  (`action.default_popup` in manifest.json)
+- [
+  `side-panel`](pages/side-panel/) - [sidepanel (Chrome 114+)](https://developer.chrome.com/docs/extensions/reference/api/sidePanel)
+  (`side_panel.default_path` in manifest.json)
+
+### Packages <a name="structure-packages"></a>
+
+Some shared packages:
+
+- `dev-utils` - utilities for Chrome extension development (manifest-parser, logger)
+- `env` - exports object which contain all environment variables from `.env` and dynamically declared
+- `hmr` - custom HMR plugin for Vite, injection script for reload/refresh, HMR dev-server
+- `i18n` - custom internationalization package; provides i18n function with type safety and other validation
+- `shared` - shared code for the entire project (types, constants, custom hooks, components etc.)
+- `storage` - helpers for easier integration with [storage](https://developer.chrome.com/docs/extensions/reference/api/storage), e.g. local/session storages
+- `tailwind-config` - shared Tailwind config for entire project
+- `tsconfig` - shared tsconfig for the entire project
+- `ui` - function to merge your Tailwind config with the global one; you can save components here
+- `vite-config` - shared Vite config for the entire project
+
+Other useful packages:
+
+- `zipper` - run `pnpm zip` to pack the `dist` folder into `extension-YYYYMMDD-HHmmss.zip` inside the newly created
+  `dist-zip`
+- `module-manager` - run `pnpm module-manager` to enable/disable modules
+- `e2e` - run `pnpm e2e` for end-to-end tests of your zipped extension on different browsers
+
+## Troubleshooting
+
+### Hot module reload seems to have frozen
+
+If saving source files doesn't cause the extension HMR code to trigger a reload of the browser page, try this:
+
+1. Ctrl+C the development server and restart it (`pnpm run dev`)
+2. If you get a [`grpc` error](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/issues/612),
+   [kill the
+   `turbo` process](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/issues/612#issuecomment-2518982339)
+   and run `pnpm dev` again.
+
+## Community
+
+To chat with other community members, you can join the [Discord](https://discord.gg/4ERQ6jgV9a) server.
+You can ask questions on that server, and you can also help others.
+
+Also, suggest new features or share any challenges you've faced while developing Chrome extensions!
+
+## Reference
+
+- [Chrome Extensions](https://developer.chrome.com/docs/extensions)
+- [Vite Plugin](https://vitejs.dev/guide/api-plugin.html)
+- [Rollup](https://rollupjs.org/guide/en/)
+- [Turborepo](https://turbo.build/repo/docs)
+- [Rollup-plugin-chrome-extension](https://www.extend-chrome.dev/rollup-plugin)
+
+## Star History <a name="star-history"></a>
+
+<a href="https://star-history.com/#Jonghakseo/chrome-extension-boilerplate-react-vite&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Jonghakseo/chrome-extension-boilerplate-react-vite&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Jonghakseo/chrome-extension-boilerplate-react-vite&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Jonghakseo/chrome-extension-boilerplate-react-vite&type=Date" />
+ </picture>
+</a>
+
+## Contributors <a name="contributors"></a>
+
+This Boilerplate is made possible thanks to all of its contributors.
+
+<a href="https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite/graphs/contributors">
+  <img width="500px" src="https://contrib.rocks/image?repo=Jonghakseo/chrome-extension-boilerplate-react-vite" alt="All Contributors"/>
+</a>
 
 ---
 
-Michael Xieyang Liu | [Website](https://lxieyang.github.io)
+## Special Thanks To
+
+| <a href="https://jb.gg/OpenSourceSupport"><img width="40" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains Logo (Main) logo."></a> | <a href="https://www.linkedin.com/in/j-acks0n"><img width="40" style="border-radius:50%" src='https://avatars.githubusercontent.com/u/23139754' alt='Jackson Hong'/></a> |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+---
+
+Made by [Jonghakseo](https://jonghakseo.github.io/)

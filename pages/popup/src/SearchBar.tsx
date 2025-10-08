@@ -2,14 +2,16 @@ import { withErrorBoundary, withSuspense } from '@extension/shared';
 
 const SearchBar = ({
   basketsById,
+  setCurrentBasketsById,
   navigateToView,
   currentView,
   selectedBasketId,
 }: {
   basketsById: any;
+  setCurrentBasketsById: any;
   navigateToView: any;
   currentView: string;
-  selectedBasketId: any;
+  selectedBasketId: string;
 }) => {
   // TODO: update displayed basket results, need to pass useState for baskets here, probably want a new one for filtered results and then one for original
   return (
@@ -29,14 +31,14 @@ const SearchBar = ({
           className={`w-4/5 px-1 rounded border`}
           placeholder="Find Basket"
           onChange={e => {
-            filterResults(basketsById, e.target.value.toLowerCase(), selectedBasketId);
+            filterResults(basketsById, setCurrentBasketsById, e.target.value.toLowerCase(), selectedBasketId);
           }}></input>
       </div>
     </div>
   );
 };
 
-const filterResults = (basketsById: any, input: string, selectedBasketId: string) => {
+const filterResults = (basketsById: any, setCurrentBasketsById: any, input: string, selectedBasketId: string) => {
   let filteredResults = [];
   if (selectedBasketId) {
     filteredResults = basketsById[selectedBasketId].parts.filter((part: any) => {
@@ -44,13 +46,14 @@ const filterResults = (basketsById: any, input: string, selectedBasketId: string
     });
   } else {
     for (let id in basketsById) {
-      if (id.includes(input)) {
+      if (id.toLowerCase().includes(input)) {
         filteredResults.push(basketsById[id]);
       }
     }
   }
 
-  return filteredResults;
+  // TODO: need a function to setState to set the filtered results that are displaying
+  setCurrentBasketsById(filteredResults);
 };
 
 export default withErrorBoundary(withSuspense(SearchBar, <div> Loading ... </div>), <div> Error Occur </div>);

@@ -45,15 +45,16 @@ const manifest = {
   },
   content_scripts: [
     {
-      matches: ['https://www.triumphonline.net/*'],
+      matches: ['https://www.triumphonline.net/basket/current'],
       js: ['content/index.iife.js'],
+      run_at: 'document_start',
     },
     {
-      matches: ['https://www.triumphonline.net/*'],
+      matches: ['https://www.triumphonline.net/basket/current'],
       js: ['content-ui/index.iife.js'],
     },
     {
-      matches: ['https://www.triumphonline.net/*'],
+      matches: ['https://www.triumphonline.net/basket/current'],
       css: ['content.css'],
     },
   ],

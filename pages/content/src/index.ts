@@ -1,5 +1,5 @@
 import { exportBasket } from '@src/exporter';
 
-console.log('content script loaded');
+console.log('content script loaded - exporter');
 
 exportBasket();

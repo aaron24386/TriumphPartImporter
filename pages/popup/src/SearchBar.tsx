@@ -1,17 +1,17 @@
 import { withErrorBoundary, withSuspense } from '@extension/shared';
 
 const SearchBar = ({
-  basketsById,
-  setCurrentBasketsById,
+  // basketsById,
+  // setCurrentBasketsById,
   navigateToView,
   currentView,
-  selectedBasketId,
+  // selectedBasketId,
 }: {
-  basketsById: any;
-  setCurrentBasketsById: any;
+  // basketsById: any;
+  // setCurrentBasketsById: any;
   navigateToView: any;
   currentView: string;
-  selectedBasketId: string;
+  // selectedBasketId: string;
 }) => {
   // TODO: update displayed basket results, need to pass useState for baskets here, probably want a new one for filtered results and then one for original
   return (
@@ -25,7 +25,7 @@ const SearchBar = ({
           </button>
         )}
       </div>
-      <div className={`w-4/5 flex-none`}>
+      {/* <div className={`w-4/5 flex-none`}>
         <input
           type="text"
           className={`w-4/5 px-1 rounded border`}
@@ -33,27 +33,27 @@ const SearchBar = ({
           onChange={e => {
             filterResults(basketsById, setCurrentBasketsById, e.target.value.toLowerCase(), selectedBasketId);
           }}></input>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-const filterResults = (basketsById: any, setCurrentBasketsById: any, input: string, selectedBasketId: string) => {
-  let filteredResults = [];
-  if (selectedBasketId) {
-    filteredResults = basketsById[selectedBasketId].parts.filter((part: any) => {
-      return part.number.toLowerCase().includes(input) || part.description.toLowerCase().includes(input);
-    });
-  } else {
-    for (let id in basketsById) {
-      if (id.toLowerCase().includes(input)) {
-        filteredResults.push(basketsById[id]);
-      }
-    }
-  }
+// const filterResults = (basketsById: any, setCurrentBasketsById: any, input: string, selectedBasketId: string) => {
+//   let filteredResults = [];
+//   if (selectedBasketId) {
+//     filteredResults = basketsById[selectedBasketId].parts.filter((part: any) => {
+//       return part.number.toLowerCase().includes(input) || part.description.toLowerCase().includes(input);
+//     });
+//   } else {
+//     for (let id in basketsById) {
+//       if (id.toLowerCase().includes(input)) {
+//         filteredResults.push(basketsById[id]);
+//       }
+//     }
+//   }
 
-  // TODO: need a function to setState to set the filtered results that are displaying
-  setCurrentBasketsById(filteredResults);
-};
+//   // TODO: need a function to setState to set the filtered results that are displaying
+//   setCurrentBasketsById(filteredResults);
+// };
 
 export default withErrorBoundary(withSuspense(SearchBar, <div> Loading ... </div>), <div> Error Occur </div>);

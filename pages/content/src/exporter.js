@@ -69,6 +69,7 @@ export const exportBasket = () => {
       if (rowCount > 0) {
         for (var i = 0; i < rowCount; i++) {
           const quantity = parseInt(quantityRows[i].value);
+          // TODO: this may be exporting with an extra space at the end, need to remove it
           const number = partRows[i]?.textContent;
           basket.addPart({
             number,

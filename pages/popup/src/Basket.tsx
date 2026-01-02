@@ -15,7 +15,7 @@ const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: an
       <div className={`w-1/5 flex-none`}>{Object.keys(basket.partList).length} parts</div>
       <div className={`w-1/5 flex-none`}>
         {/* TODO: disable button if we are not on a lizzy page */}
-        <button className={`bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded`} onClick={() => importBasket(basket)}>
+        <button className={`bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded`} onClick={e => importBasket(e, basket)}>
           Import
         </button>
       </div>
@@ -24,7 +24,8 @@ const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: an
   );
 };
 
-const importBasket = async (basket: Basket) => {
+const importBasket = async (e, basket: Basket) => {
+  e.stopPropagation();
   console.log(`importing basket: ${basket}`);
 
   const validUrls = ['https://*.nizex.com/'];
@@ -42,6 +43,7 @@ const importBasket = async (basket: Basket) => {
     };
     const response = await chrome.tabs.sendMessage(tab.id, importBasketMessage);
 
+    // AP: TODO: add messaging when basket is successfully or unsuccessfully imported
     if (response?.success) {
       console.log('Basket imported successfully');
     } else {

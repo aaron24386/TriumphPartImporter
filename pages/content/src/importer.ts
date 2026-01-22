@@ -23,7 +23,7 @@ interface ImportBasketMessage extends Message {
   basket: Basket;
 }
 
-let itemLocatorIntervalId;
+let itemLocatorIntervalId: NodeJS.Timeout;
 let count = 0;
 
 const importBasket = (basket: Basket, sendResponse) => {
@@ -148,26 +148,26 @@ const checkForElement = (selectorString: string, queryElement: HTMLElement = doc
   });
 };
 
-const invItemSelect = async (region, item, isAlsoSell = false, ChildItemID = 0) => {
+const invItemSelect = async (region: string, item: string, isAlsoSell = false, ChildItemID = 0) => {
   //TKS 12.09.2020rgb(95, 102, 91) I have to change the name/id of this field because the 'Add new part' link that pulls up
   //the add item control from inventory also has a hid_itemid and breaks because we have 2 idental hidden fields
-  document.querySelector('#hid_invoice_itemid').value = item;
+  (document.querySelector('#hid_invoice_itemid') as HTMLInputElement).value = item;
 
   //TKS 05.15.2015 #66724 added this hidden field to track child
-  document.querySelector('#hid_childitemid').value = ChildItemID;
+  (document.querySelector('#hid_childitemid') as HTMLInputElement).value = `${ChildItemID}`;
 
   //TKS 06.18.2014 #53411
   await closeInvoiceItemlocate(region);
-  document.querySelector('#txt_descriptiontoadd').focus();
+  (document.querySelector('#txt_descriptiontoadd') as HTMLTextAreaElement).focus();
 
   //TKS 02.21.2012 #12364 added lost sale button. Hide by default until they select an item
-  document.querySelector('#hideshow_lostsale').style.display = 'inline';
+  (document.querySelector('#hideshow_lostsale') as HTMLDivElement).style.display = 'inline';
   return await getNewInvoicePartInfo(isAlsoSell, ChildItemID);
 };
 
-const closeInvoiceItemlocate = async elementId => {
+const closeInvoiceItemlocate = async (elementId: string) => {
   try {
-    return (document.querySelector(`#${elementId}`).innerHTML = '');
+    return ((document.querySelector(`#${elementId}`) as HTMLDivElement).innerHTML = '');
   } catch (err) {
     console.error(err);
   }
@@ -180,13 +180,13 @@ const getNewInvoicePartInfo = async (isAlsoSell = false, ChildItemID = 0) => {
   //TKS 12.09.2020 #183305 I have to change the name/id of this field because the 'Add new part' link that pulls up
   //the add item control from inventory also has a hid_itemid and breaks because we have 2 idental hidden fields
   let itemId = 0;
-  const hiddenInvoiceItemId = document.querySelector('#hid_invoice_itemid')?.value || 0;
+  const hiddenInvoiceItemId = (document.querySelector('#hid_invoice_itemid') as HTMLInputElement).value || 0;
   if (hiddenInvoiceItemId > 0) {
     itemId = hiddenInvoiceItemId;
   }
 
-  const partNumber = encodeURIComponent(document.querySelector('#txt_partnumbertoadd')?.value);
-  const contactId = document.querySelector('#global_contactid')?.value;
+  const partNumber = encodeURIComponent((document.querySelector('#txt_partnumbertoadd') as HTMLInputElement)?.value);
+  const contactId = (document.querySelector('#global_contactid') as HTMLInputElement)?.value;
   // AP: TODO: Unsure if this ever will need to change
 
   //11.09.2011 jss - added encodeURIComponent cuz salina has pound signs in their part #'s
@@ -202,7 +202,7 @@ const getNewInvoicePartInfo = async (isAlsoSell = false, ChildItemID = 0) => {
 const call_cs_invoice_items = async (response: string) => {
   //this is returned if more than one items is found with the same p/n
   if (response == 'stop') {
-    document.querySelector('#txt_partnumbertoadd')?.focus();
+    (document.querySelector('#txt_partnumbertoadd') as HTMLInputElement).focus();
     return;
   }
 
@@ -211,86 +211,91 @@ const call_cs_invoice_items = async (response: string) => {
   }
 
   let myArray;
+  const descriptionTextArea = document.querySelector('#txt_descriptiontoadd') as HTMLTextAreaElement;
+  const priceInput = document.querySelector('#txt_pricetoadd') as HTMLInputElement;
+  const partNoteDiv = document.querySelector('#reg_partnote') as HTMLDivElement;
+  const partNumberToAddInput = document.querySelector('#txt_partnumbertoadd') as HTMLInputElement;
+  const hiddenCostInput = document.querySelector('#hid_cost') as HTMLInputElement;
+  const packagingTypeSpan = document.querySelector('#packagingtype') as HTMLSpanElement;
+  const discountToAddInput = document.querySelector('#txt_discounttoadd') as HTMLInputElement;
+
   if (response.substring(0, 5) != 'blank') {
     //07.05.2012 ghh - added to deal with json array instead of pipe array
     //due to pipe symbols in descriptions
     myArray = JSON.parse(response);
 
+    const hiddenPriceInput = document.querySelector('#hid_pricetoadd') as HTMLInputElement;
+    const hiddenInvoiceItemInput = document.querySelector('#hid_invoice_itemid') as HTMLInputElement;
+    const toBePulledDiv = document.querySelector('#reg_ToBePulled') as HTMLDivElement;
+    const hiddenMatrixLevelInput = document.querySelector('#hid_matrixlevel') as HTMLInputElement;
+    const textOnOrderTextArea = document.querySelector('#txt_onorder') as HTMLTextAreaElement;
     //07.05.2012 ghh - replaced above code with new json array parsing
-    document.querySelector('#txt_descriptiontoadd').value = myArray[0];
-    document.querySelector('#txt_pricetoadd').value = myArray[2];
-    document.querySelector('#hid_pricetoadd').value = myArray[2];
+    descriptionTextArea.value = myArray[0];
+
+    priceInput.value = myArray[2];
+    hiddenPriceInput.value = myArray[2];
 
     //TKS 12.09.2020 #183305 I have to change the name/id of this field because the 'Add new part' link that pulls up
     //the add item control from inventory also has a hid_itemid and breaks because we have 2 idental hidden fields
-    document.querySelector('#hid_invoice_itemid').value = myArray[3];
-    document.querySelector('#reg_partnote').innerHTML = myArray[6];
-    document.querySelector('#hid_cost').value = myArray[7];
-    document.querySelector('#txt_partnumbertoadd').value = myArray[8];
-    document.querySelector('#packagingtype').innerHTML = myArray[12];
-    document.querySelector('#reg_ToBePulled').innerHTML = myArray[10];
-    document.querySelector('#hid_matrixlevel').value = myArray[11];
-    document.querySelector('#txt_onorder').value = myArray[14];
-    document.querySelector('#hid_isRental').value = myArray[15];
+    hiddenInvoiceItemInput.value = myArray[3];
+    partNoteDiv.innerHTML = myArray[6];
+    hiddenCostInput.value = myArray[7];
+    partNumberToAddInput.value = myArray[8];
+    packagingTypeSpan.innerHTML = myArray[12];
+    toBePulledDiv.innerHTML = myArray[10];
+    hiddenMatrixLevelInput.value = myArray[11];
+    textOnOrderTextArea.value = myArray[14];
+    (document.querySelector('#hid_isRental') as HTMLInputElement).value = myArray[15];
     //TKS 11.30.2022 #228241
     try {
-      document.querySelector('#hid_qoh').value = myArray[16];
+      (document.querySelector('#hid_qoh') as HTMLInputElement).value = myArray[16];
     } catch (err) {}
     try {
-      document.querySelector('#hid_minorderqty').value = myArray[17];
+      (document.querySelector('#hid_minorderqty') as HTMLInputElement).value = myArray[17];
     } catch (err) {}
     //***********************
 
     try {
-      document.querySelector('#txt_discounttoadd').value = myArray[9];
+      discountToAddInput.value = myArray[9];
     } catch (err) {}
 
-    if (myArray[4] == 1) document.querySelector('#po_field').style.display = 'inline';
-    else document.querySelector('#po_field').style.display = 'none';
+    const poFieldDiv = document.querySelector('#po_field') as HTMLDivElement;
+    poFieldDiv.style.display = myArray[4] == 1 ? 'inline' : 'none';
 
     //TKS 06.04.2015 #68029 we now send back from the cs_invoice_items whether this field
     //is readonly or not. It is not only contingent on security but if giftcard
-    if (myArray[13] == 1) document.querySelector('#txt_pricetoadd').readOnly = true;
-    else document.querySelector('#txt_pricetoadd').readOnly = false;
+    priceInput.readOnly = myArray[13] == 1 ? true : false;
 
     // close_invoice_itemlocate();
   } else {
-    document.querySelector('#txt_partnumbertoadd').value = '';
-    document.querySelector('#txt_descriptiontoadd').value = '';
-    document.querySelector('#txt_pricetoadd').value = '';
-    document.querySelector('#txt_discounttoadd').value = '';
-    document.querySelector('#hid_cost').value = '';
-    document.querySelector('#reg_partnote').innerHTML = '';
+    partNumberToAddInput.value = '';
+    descriptionTextArea.value = '';
+    priceInput.value = '';
+    discountToAddInput.value = '';
+    hiddenCostInput.value = '';
+    partNoteDiv.innerHTML = '';
+    packagingTypeSpan.innerHTML = '';
     //TKS 02.05.2015 #63040 added these regions to clear if blank comes back
     //******************
-    document.querySelector('#reg_itemtaxes').innerHTML = '';
-    document.querySelector('#reg_driver_po').innerHTML = '';
-    document.querySelector('#reg_reference').innerHTML = '';
-    document.querySelector('#reg_replaceby').innerHTML = '';
-    document.querySelector('#reg_bins').innerHTML = '';
-    document.querySelector('#reg_alsosell').innerHTML = '';
-    //******************
-    //TKS 07.03.2012 #20749
-    document.querySelector('#packagingtype').innerHTML = '';
+    (document.querySelector('#reg_itemtaxes') as HTMLDivElement).innerHTML = '';
+    (document.querySelector('#reg_driver_po') as HTMLDivElement).innerHTML = '';
+    (document.querySelector('#reg_reference') as HTMLDivElement).innerHTML = '';
+    (document.querySelector('#reg_replaceby') as HTMLDivElement).innerHTML = '';
+    (document.querySelector('#reg_alsosell') as HTMLDivElement).innerHTML = '';
+    (document.querySelector('#reg_bins') as HTMLSpanElement).innerHTML = '';
     //TKS 07.11.2014 #54540 added sales promo region for potential promotions
-    document.querySelector('#reg_part_promos').innerHTML = '';
+    (document.querySelector('#reg_part_promos') as HTMLDivElement).innerHTML = '';
   }
 
   //07.05.2012 ghh - changed broken to myarray
   if (myArray) {
     return await get_cv_invoice_itembins('reg_bins', myArray[3], '', '');
-    //  get_cv_invoice_itemtaxes('reg_itemtaxes', myArray[3]);
-    //  get_cv_invoice_driver_po('reg_driver_po', myArray[3]);//reference grid that shows drivers and PO #
-    //  //TKS 4-12-10 added item reference
-    //  get_cv_invoice_itemreference('reg_reference', myArray[3], true);//item reference grid
-    //  //TKS 4-12-10 added item replaceby
-    //  get_cv_invoice_itemreplaceby('reg_replaceby', myArray[3]);//item replaceby grid
-    //  //TKS 07.11.2014 #54540 added sales promo drop list
-    //  get_cv_invoice_item_promos('reg_part_promos', myArray[3], 0, 'item_locate');
+  } else {
+    return '';
   }
 };
 
-async function get_cv_invoice_itembins(placement, itemid, alllocations, otherstores) {
+async function get_cv_invoice_itembins(placement: string, itemid: string, alllocations: string, otherstores: string) {
   //TKS 9-15-10 #1636 this var gets passed in as 'all' if they click on the link to view other locations
   alllocations ??= '';
   //10.12.2011 jss - if allx stores works like alllocations except it deals with multistore
@@ -327,8 +332,9 @@ const getData = async (url: string) => {
 
     return await response.text();
     // TODO: only want 1 request at a time, their logic tries to prevent this with globalGetItemList
-  } catch (error) {
+  } catch (error: unknown) {
     // TODO: extension probably has api to display error message better
+    // TODO: add logic to save error to cache so I can review later
     console.error(JSON.stringify(error.message));
     return '';
   }

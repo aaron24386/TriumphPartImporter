@@ -5,16 +5,43 @@ export const exportBasket = () => {
    * Export Button Logic: want to update this to add the button to where the basket name
    * is
    */
-  const buttonLocationElement = document.querySelector('#name');
-  if (buttonLocationElement) {
-    const exportBasketButton = document.createElement('input');
-    exportBasketButton.value = `Export Basket`;
-    exportBasketButton.type = 'button';
-    exportBasketButton.name = 'exportBasketButton';
-    exportBasketButton.onclick = collectBasketInformation;
 
-    buttonLocationElement.insertAdjacentElement('beforebegin', exportBasketButton);
+  // Function to add the export button once the element is found
+  const addExportButton = () => {
+    const buttonLocationElement = document.querySelector('#name');
+    if (buttonLocationElement) {
+      const exportBasketButton = document.createElement('input');
+      exportBasketButton.value = `Export Basket`;
+      exportBasketButton.type = 'button';
+      exportBasketButton.name = 'exportBasketButton';
+      exportBasketButton.onclick = collectBasketInformation;
+
+      buttonLocationElement.insertAdjacentElement('beforebegin', exportBasketButton);
+      return true;
+    }
+    return false;
+  };
+
+  if (addExportButton()) {
+    return;
   }
+
+  // Monitors the dom body if button name element isn't found for 10 seconds, will add it if it's found
+  const observer = new MutationObserver((mutations, obs) => {
+    if (addExportButton()) {
+      obs.disconnect();
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  setTimeout(() => {
+    observer.disconnect();
+    console.warn('Timeout: #name element not found after 10 seconds');
+  }, 10000);
 
   /**
    * TODO: Check if this element was added, possible just move to an element that always exists
@@ -23,9 +50,9 @@ export const exportBasket = () => {
   async function collectBasketInformation() {
     // TODO: there isn't a basket id any more so needs to be updated to not incorporate this.
     // TODO: this means that I potentially need to handle ensuring baskets are unique. Probably not important till later date
-    // const basketId = document.querySelector("#ctl00_ContentPlaceHolder1_txtBasketID")?.textContent;
+    const basketId = self.crypto.randomUUID();
     const basketName = document.querySelector('#name')?.value.trim();
-    const basket = new Basket({ name: basketName });
+    const basket = new Basket({ id: basketId, name: basketName });
 
     if (!basketName) {
       alert('Basket name are required to export');
@@ -42,6 +69,7 @@ export const exportBasket = () => {
       if (rowCount > 0) {
         for (var i = 0; i < rowCount; i++) {
           const quantity = parseInt(quantityRows[i].value);
+          // TODO: this may be exporting with an extra space at the end, need to remove it
           const number = partRows[i]?.textContent;
           basket.addPart({
             number,
@@ -51,9 +79,8 @@ export const exportBasket = () => {
         }
 
         let { baskets } = await chrome.storage.local.get('baskets');
-        console.log(baskets);
         baskets ??= {};
-        baskets[basketName] = basket;
+        baskets[basketId] = basket;
         await chrome.storage.local.set({ baskets: baskets });
 
         // Update to be a popup, maybe this comes from the extension instead?

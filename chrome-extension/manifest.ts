@@ -29,7 +29,7 @@ const manifest = {
   },
   version: packageJson.version,
   description: '__MSG_extensionDescription__',
-  host_permissions: ['https://www.triumphonline.net/*'],
+  host_permissions: ['https://www.triumphonline.net/*', 'https://*.nizex.com/'],
   permissions: ['storage', 'activeTab'],
   options_page: 'options/index.html',
   background: {
@@ -45,15 +45,16 @@ const manifest = {
   },
   content_scripts: [
     {
-      matches: ['https://www.triumphonline.net/*'],
+      matches: ['https://www.triumphonline.net/basket/current', 'https://*.nizex.com/'],
       js: ['content/index.iife.js'],
+      run_at: 'document_start',
     },
     {
-      matches: ['https://www.triumphonline.net/*'],
+      matches: ['https://www.triumphonline.net/basket/current', 'https://*.nizex.com/'],
       js: ['content-ui/index.iife.js'],
     },
     {
-      matches: ['https://www.triumphonline.net/*'],
+      matches: ['https://www.triumphonline.net/basket/current', 'https://*.nizex.com/'],
       css: ['content.css'],
     },
   ],

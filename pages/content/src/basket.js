@@ -2,7 +2,8 @@ import Part from './part';
 
 class Basket {
   constructor(params) {
-    const { name } = params;
+    const { id, name } = params;
+    this.id = id;
     this.name = name || '';
     this.partList = [];
   }

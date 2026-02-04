@@ -7,7 +7,15 @@ type Basket = {
   partList: object[];
 };
 
-const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: any }) => {
+const Basket = ({
+  basket,
+  navigateToView,
+  setStatusMessage,
+}: {
+  basket: Basket;
+  navigateToView: any;
+  setStatusMessage: any;
+}) => {
   console.log(`this Basket: ${JSON.stringify(basket)}`);
   return (
     <div className={`flex py-1 text-sm hover:bg-gray-100`} onClick={() => navigateToView('partsView', basket.id)}>
@@ -15,7 +23,9 @@ const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: an
       <div className={`w-1/5 flex-none`}>{Object.keys(basket.partList).length} parts</div>
       <div className={`w-1/5 flex-none`}>
         {/* TODO: disable button if we are not on a lizzy page */}
-        <button className={`bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded`} onClick={e => importBasket(e, basket)}>
+        <button
+          className={`bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded`}
+          onClick={e => importBasket(e, basket, setStatusMessage)}>
           Import
         </button>
       </div>
@@ -24,16 +34,15 @@ const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: an
   );
 };
 
-const importBasket = async (e, basket: Basket) => {
+const importBasket = async (e, basket: Basket, setStatusMessage) => {
   e.stopPropagation();
-  console.log(`importing basket: ${basket}`);
 
   const validUrls = ['https://*.nizex.com/'];
   try {
     const [tab] = await chrome.tabs.query({ active: true, url: validUrls });
 
     if (!tab || !tab.id) {
-      console.error('No Lizzy tab found');
+      setStatusMessage({ text: 'No Lizzy tab found', type: 'error' });
       return;
     }
 
@@ -46,11 +55,13 @@ const importBasket = async (e, basket: Basket) => {
     // AP: TODO: add messaging when basket is successfully or unsuccessfully imported
     if (response?.success) {
       console.log('Basket imported successfully');
+      setStatusMessage({ text: 'Basket imported successfully', type: 'success' });
     } else {
       console.error('Failed to import basket');
+      setStatusMessage({ text: 'Failed to import basket', type: 'error' });
     }
   } catch (e) {
-    console.error('Failed to import basket', e);
+    setStatusMessage({ text: `Failed to import basket: ${e}`, type: 'error' });
   }
 };
 

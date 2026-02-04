@@ -33,7 +33,7 @@ export const exportBasket = () => {
     }
   });
 
-  observer.observe(document.body, {
+  observer.observe(document.body || document, {
     childList: true,
     subtree: true,
   });

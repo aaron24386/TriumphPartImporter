@@ -1,34 +1,59 @@
 import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Basket from '@src/Basket';
 import SearchBar from '@src/SearchBar';
 import Header from '@src/Header';
 import Part from '@src/Part';
+import StatusMessage from './StatusMessage';
 
-const Popup = async () => {
+type Part = {
+  number: string;
+  description: string;
+  quantity: number;
+};
+
+type StatusMessageType = {
+  text?: string;
+  type?: 'success' | 'error' | 'info';
+};
+
+const Popup = () => {
   const [currentView, setCurrentView] = useState<string>('basketsView');
   const [selectedBasketId, setSelectedBasketId] = useState<string>('');
-  const [basketsById, setBasketsById] = useState<any>({});
-  const [currentBasketsById, setCurrentBasketsById] = useState<any>({});
+  const [basketsById, setBasketsById] = useState<object>({});
+  const [currentBasketsById, setCurrentBasketsById] = useState<object>({});
+  const [statusMessage, setStatusMessage] = useState<StatusMessageType>({});
 
   useEffect(() => {
     const loadBaskets = async () => {
       const { baskets } = await chrome.storage.local.get('baskets');
-      console.log(baskets);
+
       setBasketsById(baskets || {});
       setCurrentBasketsById(baskets || {});
     };
+
     loadBaskets();
   }, []);
 
-  const navigateToView = (view: string, basketId?: string) => {
+  useEffect(() => {
+    const { text: messageText } = statusMessage;
+    if (!messageText?.trim()) return;
+
+    const timeoutId = window.setTimeout(() => {
+      setStatusMessage({ text: '' });
+    }, 5000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [statusMessage]);
+
+  const navigateToView = useCallback((view: string, basketId?: string) => {
     setCurrentView(view);
     setSelectedBasketId(basketId || '');
-  };
+  }, []);
 
   const basketsView = useMemo(
-    () => getBasketList(currentBasketsById, navigateToView),
+    () => getBasketList(currentBasketsById, navigateToView, setStatusMessage),
     [currentBasketsById, navigateToView],
   );
   const partsView = useMemo(
@@ -43,14 +68,20 @@ const Popup = async () => {
       {/* TODO: tabs to switch between saved baskets and potential settings page */}
       {currentView == 'basketsView' && basketsView}
       {currentView == 'partsView' && partsView}
+      <StatusMessage message={statusMessage} />
     </div>
   );
 };
 
-const getBasketList = (basketsById: any, navigateToView: any) => {
+const getBasketList = (basketsById: object, navigateToView: string, setStatusMessage) => {
   const basketHeader = <Header header1={'Baskets'} header2={'Parts'}></Header>;
   const basketList = Object.keys(basketsById).map(basketId => (
-    <Basket key={basketId} basket={basketsById[basketId]} navigateToView={navigateToView} />
+    <Basket
+      key={basketId}
+      basket={basketsById[basketId]}
+      navigateToView={navigateToView}
+      setStatusMessage={setStatusMessage}
+    />
   ));
 
   return (
@@ -61,13 +92,13 @@ const getBasketList = (basketsById: any, navigateToView: any) => {
   );
 };
 
-const getPartsList = (basketsById: any, navigateToView: any, selectedBasketId: string) => {
+const getPartsList = (basketsById: object, navigateToView: string, selectedBasketId: string) => {
   if (!selectedBasketId) {
     return;
   }
 
   const partHeader = <Header header1={'Part No.'} header2={'Part Desc.'} header3={'Qty'}></Header>;
-  const partList = basketsById[selectedBasketId].partList.map((part: any) => (
+  const partList = basketsById[selectedBasketId].partList.map((part: Part) => (
     <Part key={part.number} part={part} navigateToView={navigateToView} />
   ));
 

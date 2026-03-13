@@ -67,9 +67,7 @@ const getPartsList = (basketsById: any, navigateToView: any, selectedBasketId: s
   }
 
   const partHeader = <Header header1={'Part No.'} header2={'Part Desc.'} header3={'Qty'}></Header>;
-  const partList = basketsById[selectedBasketId].partList.map((part: any) => (
-    <Part key={part.number} part={part} navigateToView={navigateToView} />
-  ));
+  const partList = basketsById[selectedBasketId].partList.map((part: any) => <Part key={part.number} part={part} />);
 
   return (
     <>

@@ -7,7 +7,7 @@ type Part = {
   quantity: number;
 };
 
-const Part = ({ part, navigateToView }: { part: Part; navigateToView: any }) => {
+const Part = ({ part }: { part: Part }) => {
   console.log(`this Part: ${JSON.stringify(part)}`);
   return (
     <div className={`flex py-1 text-sm hover:bg-gray-100`}>

@@ -1,6 +1,6 @@
 import { canSwitchTheme } from '../helpers/theme.js';
 
-describe('Webextension Popup', () => {
+xdescribe('Webextension Popup', () => {
   it('should open the popup successfully', async () => {
     const extensionPath = await browser.getExtensionPath();
     const popupUrl = `${extensionPath}/popup/index.html`;

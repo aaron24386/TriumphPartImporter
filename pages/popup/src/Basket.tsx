@@ -1,11 +1,6 @@
 import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
-
-type Basket = {
-  id: string;
-  name: string;
-  partList: object[];
-};
+import type { Basket } from '../../../chrome-extension/public/types';
 
 const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: any }) => {
   console.log(`this Basket: ${JSON.stringify(basket)}`);

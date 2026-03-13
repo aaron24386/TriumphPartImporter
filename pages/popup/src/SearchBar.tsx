@@ -9,7 +9,7 @@ const SearchBar = ({
 }: {
   // basketsById: any;
   // setCurrentBasketsById: any;
-  navigateToView: any;
+  navigateToView: (view: string, basketId?: string) => void;
   currentView: string;
   // selectedBasketId: string;
 }) => {

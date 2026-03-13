@@ -1,16 +1,24 @@
 import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
+import type { IBasket } from '../../../chrome-extension/public/types';
 
-type Basket = {
-  id: string;
-  name: string;
-  partList: object[];
-};
-
-const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: any }) => {
+const Basket = ({
+  basket,
+  navigateToView,
+}: {
+  basket: IBasket;
+  navigateToView: (view: string, basketId?: string) => void;
+}) => {
   console.log(`this Basket: ${JSON.stringify(basket)}`);
   return (
-    <div className={`flex py-1 text-sm hover:bg-gray-100`} onClick={() => navigateToView('partsView', basket.id)}>
+    <div
+      className={`flex py-1 text-sm hover:bg-gray-100`}
+      role="button"
+      tabIndex={0}
+      onClick={() => navigateToView('partsView', basket.id)}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') navigateToView('partsView', basket.id);
+      }}>
       <div className={`w-2/5 flex-none px-1`}>{basket.name}</div>
       <div className={`w-1/5 flex-none`}>{Object.keys(basket.partList).length} parts</div>
       <div className={`w-1/5 flex-none`}>
@@ -24,7 +32,7 @@ const Basket = ({ basket, navigateToView }: { basket: Basket; navigateToView: an
   );
 };
 
-const importBasket = async (e, basket: Basket) => {
+const importBasket = async (e: React.MouseEvent, basket: IBasket) => {
   e.stopPropagation();
   console.log(`importing basket: ${basket}`);
 

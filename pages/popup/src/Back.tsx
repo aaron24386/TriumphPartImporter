@@ -1,13 +1,8 @@
 import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
+import type { IPart } from '../../../chrome-extension/public/types';
 
-type Part = {
-  number: string;
-  description: string;
-  quantity: number;
-};
-
-const Part = ({ part, navigateToView }: { part: Part; navigateToView: any }) => {
+const Part = ({ part }: { part: IPart }) => {
   console.log(`this Part: ${JSON.stringify(part)}`);
   return (
     <div className={`flex py-1 text-sm hover:bg-gray-100`}>

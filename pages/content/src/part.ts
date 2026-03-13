@@ -1,4 +1,4 @@
-import { PartParams } from '../../../chrome-extension/public/types';
+import type { PartParams } from '../../../chrome-extension/public/types';
 
 class Part {
   number: string;

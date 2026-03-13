@@ -1,10 +1,10 @@
 import Part from './part';
-import { BasketParams, PartParams } from '../../../chrome-extension/public/types';
+import type { BasketParams, PartParams, IPart } from '../../../chrome-extension/public/types';
 
 class Basket {
   id: string;
   name: string;
-  partList: Part[];
+  partList: IPart[];
 
   constructor(params: BasketParams) {
     const { id, name } = params;

@@ -9,13 +9,13 @@ interface PartParams {
   quantity: number;
 }
 
-interface Basket {
+interface IBasket {
   id: string;
   name: string;
-  partList: Part[];
+  partList: IPart[];
 }
 
-interface Part {
+interface IPart {
   number: string;
   quantity: number;
   description: string;
@@ -27,7 +27,7 @@ interface Message {
 
 interface ImportBasketMessage extends Message {
   type: 'IMPORT_BASKET';
-  basket: Basket;
+  basket: IBasket;
 }
 
-export type { BasketParams, PartParams, Basket, Part, ImportBasketMessage };
+export type { BasketParams, PartParams, IBasket, IPart, ImportBasketMessage };

@@ -1,4 +1,4 @@
-import { Basket, ImportBasketMessage } from '../../../chrome-extension/public/types';
+import type { IBasket, ImportBasketMessage } from '../../../chrome-extension/public/types';
 // constant variables that may have to change in the future but leaving as default 0 for now
 const invoice_type = 0;
 const globalInvoiceID = 0;
@@ -6,13 +6,13 @@ const globalInvoiceID = 0;
 let itemLocatorIntervalId: NodeJS.Timeout;
 let count = 0;
 
-const importBasket = (basket: Basket) => {
+const importBasket = (basket: IBasket) => {
   // TODO: check if the screen we expect to be up currently is displayed if not error
   // TOOD: FUTURE: if the screen isn't up try to display it
   addItemsToBasket(basket);
 };
 
-const addItemsToBasket = async (basket: Basket) => {
+const addItemsToBasket = async (basket: IBasket) => {
   const { partList } = basket;
 
   for (const part of partList) {
@@ -49,7 +49,7 @@ const addItemsToBasket = async (basket: Basket) => {
     const { itemId, childItemId } =
       /(?<ignore1>\D+)(?<itemId>\d+)(?<ignore2>\D+)(?<childItemId>\d+)/.exec(href)?.groups || {};
 
-    const response = await invItemSelect('reg_itemlocate', itemId, false, parseInt(childItemId) ?? 0);
+    const response = await invItemSelect('reg_itemlocate', itemId, parseInt(childItemId) ?? 0);
 
     if (response) {
       await call_cs_invoice_items(response);
@@ -79,10 +79,11 @@ export const addMessageListener = () => {
   chrome.runtime.onMessage.addListener(
     (message: ImportBasketMessage, sender: chrome.runtime.MessageSender, sendResponse) => {
       switch (message.type) {
-        case 'IMPORT_BASKET':
+        case 'IMPORT_BASKET': {
           const { basket } = message;
           importBasket(basket);
           break;
+        }
         default:
           sendResponse({ success: false, message: 'Invalid message type' });
           break;
@@ -112,7 +113,7 @@ const checkForElement = (selectorString: string, queryElement: HTMLElement = doc
   });
 };
 
-const invItemSelect = async (region: string, item: string, isAlsoSell: boolean = false, ChildItemID: number = 0) => {
+const invItemSelect = async (region: string, item: string, ChildItemID: number = 0) => {
   (document.querySelector('#hid_invoice_itemid') as HTMLInputElement).value = item;
 
   (document.querySelector('#hid_childitemid') as HTMLInputElement).value = `${ChildItemID}`;
@@ -201,14 +202,20 @@ const call_cs_invoice_items = async (response: string) => {
 
     try {
       (document.querySelector('#hid_qoh') as HTMLInputElement).value = myArray[16];
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
     try {
       (document.querySelector('#hid_minorderqty') as HTMLInputElement).value = myArray[17];
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
 
     try {
       discountToAddInput.value = myArray[9];
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
 
     const poFieldDiv = document.querySelector('#po_field') as HTMLDivElement;
     poFieldDiv.style.display = myArray[4] == 1 ? 'inline' : 'none';

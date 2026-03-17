@@ -30,4 +30,6 @@ interface ImportBasketMessage extends Message {
   basket: IBasket;
 }
 
-export type { BasketParams, PartParams, IBasket, IPart, ImportBasketMessage };
+type NavigateToViewFunction = (view: string, basketId?: string) => void;
+
+export type { BasketParams, PartParams, IBasket, IPart, ImportBasketMessage, NavigateToViewFunction };

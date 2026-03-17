@@ -9,16 +9,10 @@ const Basket = ({
   basket: IBasket;
   navigateToView: (view: string, basketId?: string) => void;
 }) => {
-  console.log(`this Basket: ${JSON.stringify(basket)}`);
+  const navigateToPartsView = () => navigateToView('partsView', basket.id);
+
   return (
-    <div
-      className={`flex py-1 text-sm hover:bg-gray-100`}
-      role="button"
-      tabIndex={0}
-      onClick={() => navigateToView('partsView', basket.id)}
-      onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') navigateToView('partsView', basket.id);
-      }}>
+    <div className={`flex py-1 text-sm hover:bg-gray-100`} onClick={navigateToPartsView}>
       <div className={`w-2/5 flex-none px-1`}>{basket.name}</div>
       <div className={`w-1/5 flex-none`}>{Object.keys(basket.partList).length} parts</div>
       <div className={`w-1/5 flex-none`}>

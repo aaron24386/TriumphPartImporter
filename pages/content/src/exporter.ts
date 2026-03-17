@@ -75,4 +75,63 @@ export const exportBasket = () => {
       alert(`Please add parts to the basket before trying to export`);
     }
   }
+
+  const addDefaultBaskets = () => {
+    const fakeBaskets = [
+      {
+        name: 'Basket 1',
+        parts: [
+          { name: 'TS1234', qty: 1, description: 'Description 1' },
+          { name: 'TS4424', qty: 2, description: 'Description 2' },
+          { name: 'TS435444', qty: 1, description: 'Description 3' },
+          { name: 'TS64646', qty: 2, description: 'Description 4' },
+        ],
+      },
+      {
+        name: 'Basket 2',
+        parts: [
+          { name: 'BS84484', qty: 1, description: 'Description 1' },
+          { name: 'BS33338', qty: 2, description: 'Description 2' },
+          { name: 'BS33333', qty: 1, description: 'Description 3' },
+          { name: 'BS9009', qty: 2, description: 'Description 4' },
+        ],
+      },
+      {
+        name: 'Basket 3',
+        parts: [
+          { name: 'LM23444', qty: 1, description: 'Description 1' },
+          { name: 'LM9009', qty: 1, description: 'Description 2' },
+          { name: 'LM333444', qty: 1, description: 'Description 3' },
+          { name: 'LM44444', qty: 1, description: 'Description 4' },
+        ],
+      },
+      {
+        name: 'Basket 4',
+        parts: [
+          { name: 'DD9999', qty: 3, description: 'Description 1' },
+          { name: 'DD0000000', qty: 4, description: 'Description 2' },
+          { name: 'DD2323232', qty: 5, description: 'Description 3' },
+          { name: 'DD5555', qty: 6, description: 'Description 4' },
+        ],
+      },
+    ];
+
+    fakeBaskets.forEach(async fakeBasket => {
+      const basketId = self.crypto.randomUUID();
+      const newBasket = new Basket({ id: basketId, name: fakeBasket.name });
+
+      fakeBasket.parts.forEach(part => {
+        newBasket.addPart({
+          number: part.name,
+          quantity: part.qty,
+          description: part.description,
+        });
+      });
+
+      let { baskets } = await chrome.storage.local.get('baskets');
+      baskets ??= {};
+      baskets[basketId] = newBasket;
+      await chrome.storage.local.set({ baskets: baskets });
+    });
+  };
 };

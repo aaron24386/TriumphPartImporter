@@ -76,55 +76,52 @@ export const exportBasket = () => {
     }
   }
 
-  const addDefaultBaskets = () => {
+  const addDefaultBaskets = async () => {
     const fakeBaskets = [
       {
-        name: 'Basket 1',
         parts: [
-          { name: 'TS1234', qty: 1, description: 'Description 1' },
-          { name: 'TS4424', qty: 2, description: 'Description 2' },
-          { name: 'TS435444', qty: 1, description: 'Description 3' },
-          { name: 'TS64646', qty: 2, description: 'Description 4' },
+          { number: 'TS1234', quantity: 1, description: 'Description 1' },
+          { number: 'TS4424', quantity: 2, description: 'Description 2' },
+          { number: 'TS435444', quantity: 1, description: 'Description 3' },
+          { number: 'TS64646', quantity: 2, description: 'Description 4' },
         ],
       },
       {
-        name: 'Basket 2',
         parts: [
-          { name: 'BS84484', qty: 1, description: 'Description 1' },
-          { name: 'BS33338', qty: 2, description: 'Description 2' },
-          { name: 'BS33333', qty: 1, description: 'Description 3' },
-          { name: 'BS9009', qty: 2, description: 'Description 4' },
+          { number: 'BS84484', quantity: 1, description: 'Description 1' },
+          { number: 'BS33338', quantity: 2, description: 'Description 2' },
+          { number: 'BS33333', quantity: 1, description: 'Description 3' },
+          { number: 'BS9009', quantity: 2, description: 'Description 4' },
         ],
       },
       {
-        name: 'Basket 3',
         parts: [
-          { name: 'LM23444', qty: 1, description: 'Description 1' },
-          { name: 'LM9009', qty: 1, description: 'Description 2' },
-          { name: 'LM333444', qty: 1, description: 'Description 3' },
-          { name: 'LM44444', qty: 1, description: 'Description 4' },
+          { number: 'LM23444', quantity: 1, description: 'Description 1' },
+          { number: 'LM9009', quantity: 1, description: 'Description 2' },
+          { number: 'LM333444', quantity: 1, description: 'Description 3' },
+          { number: 'LM44444', quantity: 1, description: 'Description 4' },
         ],
       },
       {
-        name: 'Basket 4',
         parts: [
-          { name: 'DD9999', qty: 3, description: 'Description 1' },
-          { name: 'DD0000000', qty: 4, description: 'Description 2' },
-          { name: 'DD2323232', qty: 5, description: 'Description 3' },
-          { name: 'DD5555', qty: 6, description: 'Description 4' },
+          { number: 'DD9999', quantity: 3, description: 'Description 1' },
+          { number: 'DD0000000', quantity: 4, description: 'Description 2' },
+          { number: 'DD2323232', quantity: 5, description: 'Description 3' },
+          { number: 'DD5555', quantity: 6, description: 'Description 4' },
         ],
       },
     ];
 
-    fakeBaskets.forEach(async fakeBasket => {
+    for (const i in fakeBaskets) {
+      const { parts } = fakeBaskets[i];
       const basketId = self.crypto.randomUUID();
-      const newBasket = new Basket({ id: basketId, name: fakeBasket.name });
+      const newBasket = new Basket({ id: basketId, name: `Basket ${+i + 1}` });
 
-      fakeBasket.parts.forEach(part => {
+      parts.forEach(({ number, quantity, description }) => {
         newBasket.addPart({
-          number: part.name,
-          quantity: part.qty,
-          description: part.description,
+          number,
+          quantity,
+          description,
         });
       });
 
@@ -132,6 +129,8 @@ export const exportBasket = () => {
       baskets ??= {};
       baskets[basketId] = newBasket;
       await chrome.storage.local.set({ baskets: baskets });
-    });
+    }
+
+    return '';
   };
 };

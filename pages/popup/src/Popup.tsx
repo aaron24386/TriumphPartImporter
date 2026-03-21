@@ -5,6 +5,7 @@ import BasketTable from '@src/BasketTable';
 import PartTable from '@src/PartTable';
 import SearchBar from '@src/SearchBar';
 import type { IBasket } from '../../../chrome-extension/public/types';
+import { ViewOptions } from '../../../chrome-extension/public/enums';
 
 let basketsById: Record<string, IBasket> = {};
 const getBaskets = async () => {
@@ -13,10 +14,12 @@ const getBaskets = async () => {
 };
 getBaskets();
 const Popup = () => {
-  const [currentView, setCurrentView] = useState<string>('basketsView');
+  const [currentView, setCurrentView] = useState<ViewOptions>(ViewOptions.BASKET_VIEW);
   const [selectedBasketId, setSelectedBasketId] = useState<string>('');
+  const [filterText, setFilterText] = useState<string>('');
 
-  const navigateToView = (view: string, basketId?: string) => {
+  const navigateToView = (view: ViewOptions, basketId?: string) => {
+    setFilterText('');
     setCurrentView(view);
     setSelectedBasketId(basketId || '');
   };
@@ -25,10 +28,14 @@ const Popup = () => {
   return (
     <div>
       {/* TODO: implement search bar logic for parts and baskets, this is just the back button for now */}
-      <SearchBar navigateToView={navigateToView} currentView={currentView}></SearchBar>
+      <SearchBar setFilterText={setFilterText}></SearchBar>
       {/* TODO: tabs to switch between saved baskets and potential settings page */}
-      {currentView == 'basketsView' && <BasketTable basketsById={basketsById} navigateToView={navigateToView} />}
-      {currentView == 'partsView' && <PartTable basket={basketsById[selectedBasketId]} />}
+      {currentView == ViewOptions.BASKET_VIEW && (
+        <BasketTable basketsById={basketsById} navigateToView={navigateToView} filterText={filterText} />
+      )}
+      {currentView == ViewOptions.PARTS_VIEW && (
+        <PartTable basket={basketsById[selectedBasketId]} navigateToView={navigateToView} filterText={filterText} />
+      )}
     </div>
   );
 };

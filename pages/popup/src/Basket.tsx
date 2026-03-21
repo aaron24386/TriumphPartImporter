@@ -1,15 +1,10 @@
 import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
-import type { IBasket } from '../../../chrome-extension/public/types';
+import type { IBasket, NavigateToViewFunction } from '../../../chrome-extension/public/types';
+import { ViewOptions } from '../../../chrome-extension/public/enums';
 
-const Basket = ({
-  basket,
-  navigateToView,
-}: {
-  basket: IBasket;
-  navigateToView: (view: string, basketId?: string) => void;
-}) => {
-  const navigateToPartsView = () => navigateToView('partsView', basket.id);
+const Basket = ({ basket, navigateToView }: { basket: IBasket; navigateToView: NavigateToViewFunction }) => {
+  const navigateToPartsView = () => navigateToView(ViewOptions.PARTS_VIEW, basket.id);
 
   return (
     <div

@@ -2,22 +2,28 @@ import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
 import type { IBasket, NavigateToViewFunction } from '../../../chrome-extension/public/types';
 import Basket from '@src/Basket';
-import Header from '@src/Header';
+import SubHeader from '@src/SubHeader';
 
 const BasketTable = ({
   basketsById,
   navigateToView,
+  filterText,
 }: {
   basketsById: Record<string, IBasket>;
   navigateToView: NavigateToViewFunction;
+  filterText: string;
 }) => {
-  const basketList = Object.values(basketsById).map((basket: IBasket) => (
-    <Basket key={basket.id} basket={basket} navigateToView={navigateToView} />
-  ));
+  const basketList = Object.values(basketsById).reduce((basketList, basket: IBasket) => {
+    if (basket.name.toLowerCase().includes(filterText)) {
+      basketList.push(<Basket key={basket.id} basket={basket} navigateToView={navigateToView} />);
+    }
+
+    return basketList;
+  }, [] as React.ReactNode[]);
 
   return (
     <div className={'h-auto'}>
-      <Header header1={'Baskets'} header2={'Parts'}></Header>
+      <SubHeader header1={'Baskets'} header2={'Parts'}></SubHeader>
       <div className={'h-[400px] overflow-auto'}>{basketList}</div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { ViewOptions } from './enums';
+
 interface BasketParams {
   id: string;
   name: string;
@@ -30,6 +32,6 @@ interface ImportBasketMessage extends Message {
   basket: IBasket;
 }
 
-type NavigateToViewFunction = (view: string, basketId?: string) => void;
+type NavigateToViewFunction = (view: ViewOptions, basketId?: string) => void;
 
 export type { BasketParams, PartParams, IBasket, IPart, ImportBasketMessage, NavigateToViewFunction };

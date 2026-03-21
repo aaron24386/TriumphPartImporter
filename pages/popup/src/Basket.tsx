@@ -13,7 +13,7 @@ const Basket = ({
 
   return (
     <div
-      className={`flex py-1 text-sm hover:bg-gray-100`}
+      className={`basket-row`}
       onClick={navigateToPartsView}
       role="button"
       tabIndex={0}
@@ -26,7 +26,7 @@ const Basket = ({
       <div className={`w-1/5 flex-none`}>{Object.keys(basket.partList).length} parts</div>
       <div className={`w-1/5 flex-none`}>
         {/* TODO: disable button if we are not on a lizzy page */}
-        <button className={`bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded`} onClick={e => importBasket(e, basket)}>
+        <button className={`import-button`} onClick={e => importBasket(e, basket)}>
           Import
         </button>
       </div>

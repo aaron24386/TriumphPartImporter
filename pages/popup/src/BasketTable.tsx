@@ -16,10 +16,10 @@ const BasketTable = ({
   ));
 
   return (
-    <>
+    <div className={'h-auto'}>
       <Header header1={'Baskets'} header2={'Parts'}></Header>
-      {basketList}
-    </>
+      <div className={'h-[400px] overflow-auto'}>{basketList}</div>
+    </div>
   );
 };
 

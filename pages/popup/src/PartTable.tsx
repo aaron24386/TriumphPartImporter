@@ -8,12 +8,12 @@ const PartTable = ({ basket }: { basket: IBasket }) => {
   const partList = basket.partList.map((part: IPart) => <Part key={part.number} part={part} />);
 
   return (
-    <>
+    <div className={'h-auto'}>
       <Header header1={'Part No.'} header2={'Part Desc.'} header3={'Qty'}></Header>
       {/* AP TODO: header updated to be the basket name */}
       {/* AP TODO: Subheader for part, description and qty */}
-      {partList}
-    </>
+      <div className={'h-[400px] overflow-auto'}>{partList}</div>
+    </div>
   );
 };
 

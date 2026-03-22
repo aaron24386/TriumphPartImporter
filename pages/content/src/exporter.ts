@@ -59,7 +59,7 @@ export const exportBasket = () => {
         basket.addPart({
           number,
           quantity,
-          description: descriptionRows[index]?.textContent,
+          description: descriptionRows[index]?.textContent.trim(),
         });
       });
 

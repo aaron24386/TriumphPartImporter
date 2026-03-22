@@ -1,29 +1,27 @@
 import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
-import type { IBasket } from '../../../chrome-extension/public/types';
+import type { IBasket, NavigateToViewFunction } from '../../../chrome-extension/public/types';
+import { ViewOptions } from '../../../chrome-extension/public/enums';
 
-const Basket = ({
-  basket,
-  navigateToView,
-}: {
-  basket: IBasket;
-  navigateToView: (view: string, basketId?: string) => void;
-}) => {
-  console.log(`this Basket: ${JSON.stringify(basket)}`);
+const Basket = ({ basket, navigateToView }: { basket: IBasket; navigateToView: NavigateToViewFunction }) => {
+  const navigateToPartsView = () => navigateToView(ViewOptions.PARTS_VIEW, basket.id);
+
   return (
     <div
-      className={`flex py-1 text-sm hover:bg-gray-100`}
+      className={`basket-row`}
+      onClick={navigateToPartsView}
       role="button"
       tabIndex={0}
-      onClick={() => navigateToView('partsView', basket.id)}
       onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') navigateToView('partsView', basket.id);
+        if (e.key === 'Enter') {
+          navigateToPartsView();
+        }
       }}>
       <div className={`w-2/5 flex-none px-1`}>{basket.name}</div>
       <div className={`w-1/5 flex-none`}>{Object.keys(basket.partList).length} parts</div>
       <div className={`w-1/5 flex-none`}>
         {/* TODO: disable button if we are not on a lizzy page */}
-        <button className={`bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded`} onClick={e => importBasket(e, basket)}>
+        <button className={`import-button`} onClick={e => importBasket(e, basket)}>
           Import
         </button>
       </div>

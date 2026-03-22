@@ -28,3 +28,11 @@ code {
   border-radius: 0.25rem;
   padding: 0.2rem 0.5rem;
 }
+
+.basket-row {
+  @apply flex py-1 text-sm hover:bg-gray-100;
+}
+
+.import-button {
+  @apply bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded;
+}

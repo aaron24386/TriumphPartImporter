@@ -3,7 +3,6 @@ import { withErrorBoundary, withSuspense } from '@extension/shared';
 import type { IPart } from '../../../chrome-extension/public/types';
 
 const Part = ({ part }: { part: IPart }) => {
-  console.log(`this Part: ${JSON.stringify(part)}`);
   return (
     <div className={`flex py-1 text-sm hover:bg-gray-100`}>
       <div className={`w-2/5 flex-none px-1`}>{part.number}</div>

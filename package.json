@@ -39,8 +39,8 @@
     "module-manager": "pnpm -F module-manager start"
   },
   "dependencies": {
-    "react": "19.2.4",
-    "react-dom": "19.0.0"
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
@@ -51,8 +51,8 @@
     "@types/eslint__eslintrc": "^2.1.2",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^22.5.5",
-    "@types/react": "^19.2.9",
-    "@types/react-dom": "^19.0.3",
+    "@types/react": "^19.1.5",
+    "@types/react-dom": "^19.1.5",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "deepmerge": "^4.3.1",

@@ -5,15 +5,13 @@ import { ViewOptions } from '../../../chrome-extension/public/enums';
 
 const Header = ({ header, navigateToView }: { header: string; navigateToView: NavigateToViewFunction }) => {
   return (
-    <div className={`flex py-1`}>
-      <div className={`w-1/5 flex-none px-1`}>
-        <button
-          className={`bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded`}
-          onClick={() => navigateToView(ViewOptions.BASKET_VIEW)}>
-          Back
-        </button>
-      </div>
-      <div className={`w-4/5 flex-none text-base text-center`}>{header}</div>
+    <div className={`relative flex items-center py-1`}>
+      <button
+        className={`absolute left-1 top-1/2 -translate-y-[45%] bg-[#ACC5FD] px-2 py-1 rounded hover:bg-[#9EB0DB]`}
+        onClick={() => navigateToView(ViewOptions.BASKET_VIEW)}>
+        <img src="leftarrow.svg" alt="left arrow" width="20" height="20" className="fill-current hover:bg-[#9EB0DB]" />
+      </button>
+      <div className={`w-full px-10 text-base text-center`}>{header}</div>
     </div>
   );
 };

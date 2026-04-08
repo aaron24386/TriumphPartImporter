@@ -29,10 +29,22 @@ code {
   padding: 0.2rem 0.5rem;
 }
 
+.basket-row-container:hover:not(:has(.dots-button:hover)) {
+  @apply bg-gray-100;
+}
+
 .basket-row {
-  @apply flex py-1 text-sm hover:bg-gray-100;
+  @apply flex py-1 text-sm items-center;
 }
 
 .import-button {
   @apply bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded;
+}
+
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg p-6 shadow-lg max-w-sm w-full mx-4;
 }

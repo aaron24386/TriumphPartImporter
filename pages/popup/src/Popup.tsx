@@ -1,24 +1,27 @@
 import '@src/Popup.css';
 import { withErrorBoundary, withSuspense } from '@extension/shared';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BasketTable from '@src/BasketTable';
 import PartTable from '@src/PartTable';
 import SearchBar from '@src/SearchBar';
 import type { IBasket } from '../../../chrome-extension/public/types';
 import { ViewOptions } from '../../../chrome-extension/public/enums';
 
-let currentBaskets: Record<string, IBasket> = {};
-const getBaskets = async () => {
-  const { baskets } = await chrome.storage.local.get('baskets');
-  currentBaskets = baskets || {};
-};
-getBaskets();
+let tabId: number = 0;
 
 const Popup = () => {
   const [currentView, setCurrentView] = useState<ViewOptions>(ViewOptions.BASKET_VIEW);
   const [selectedBasketId, setSelectedBasketId] = useState<string>('');
   const [filterText, setFilterText] = useState<string>('');
-  const [basketsById, setBasketsById] = useState<Record<string, IBasket>>(currentBaskets);
+  const [basketsById, setBasketsById] = useState<Record<string, IBasket>>({});
+
+  useEffect(() => {
+    chrome.storage.local.get('baskets').then(({ baskets }) => {
+      setBasketsById(baskets || {});
+    });
+
+    chrome.tabs.query({ active: true, url: ['https://*.nizex.com/*'] }).then(([tab]) => (tabId = tab?.id ?? 0));
+  }, []);
 
   const navigateToView = (view: ViewOptions, basketId?: string) => {
     setFilterText('');
@@ -49,6 +52,7 @@ const Popup = () => {
           navigateToView={navigateToView}
           filterText={filterText}
           deleteBasket={deleteBasket}
+          tabId={tabId}
         />
       )}
       {currentView == ViewOptions.PARTS_VIEW && (

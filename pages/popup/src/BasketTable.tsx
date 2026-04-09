@@ -9,16 +9,24 @@ const BasketTable = ({
   navigateToView,
   filterText,
   deleteBasket,
+  tabId,
 }: {
   basketsById: Record<string, IBasket>;
   navigateToView: NavigateToViewFunction;
   filterText: string;
   deleteBasket: (basketId: string) => void;
+  tabId: number;
 }) => {
   const basketList = Object.values(basketsById).reduce((basketList, basket: IBasket) => {
     if (basket.name.toLowerCase().includes(filterText)) {
       basketList.push(
-        <Basket key={basket.id} basket={basket} navigateToView={navigateToView} deleteBasket={deleteBasket} />,
+        <Basket
+          key={basket.id}
+          basket={basket}
+          navigateToView={navigateToView}
+          deleteBasket={deleteBasket}
+          tabId={tabId}
+        />,
       );
     }
 

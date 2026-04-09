@@ -9,10 +9,12 @@ const Basket = ({
   basket,
   navigateToView,
   deleteBasket,
+  tabId,
 }: {
   basket: IBasket;
   navigateToView: NavigateToViewFunction;
   deleteBasket: (basketId: string) => void;
+  tabId: number;
 }) => {
   const [showBasketOptions, setShowBasketOptions] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
@@ -56,8 +58,11 @@ const Basket = ({
         <div className={`w-2/5 flex-none px-1`}>{basket.name}</div>
         <div className={`w-1/5 flex-none`}>{Object.keys(basket.partList).length} parts</div>
         <div className={`w-1/5 flex-none`}>
-          {/* TODO: disable button if we are not on a lizzy page */}
-          <button className={`import-button`} onClick={e => importBasket(e, basket)}>
+          <button
+            className="import-button"
+            type="button"
+            disabled={tabId === 0}
+            onClick={e => importBasket(e, { tabId, basket })}>
             Import
           </button>
         </div>
@@ -83,24 +88,19 @@ const Basket = ({
   );
 };
 
-const importBasket = async (e: React.MouseEvent, basket: IBasket) => {
+const importBasket = async (e: React.MouseEvent, { tabId, basket }: { tabId: number; basket: IBasket }) => {
   e.stopPropagation();
+  if (tabId === 0) {
+    return;
+  }
   console.log(`importing basket: ${basket}`);
 
-  const validUrls = ['https://*.nizex.com/'];
   try {
-    const [tab] = await chrome.tabs.query({ active: true, url: validUrls });
-
-    if (!tab || !tab.id) {
-      console.error('No Lizzy tab found');
-      return;
-    }
-
     const importBasketMessage = {
       type: 'IMPORT_BASKET',
       basket,
     };
-    const response = await chrome.tabs.sendMessage(tab.id, importBasketMessage);
+    const response = await chrome.tabs.sendMessage(tabId, importBasketMessage);
 
     // AP: TODO: add messaging when basket is successfully or unsuccessfully imported
     if (response?.success) {

@@ -41,6 +41,10 @@ code {
   @apply bg-[#ACC5FD] hover:bg-[#9EB0DB] px-2 py-1 rounded;
 }
 
+.import-button:disabled {
+  @apply cursor-not-allowed bg-slate-300 text-slate-500 opacity-80 hover:bg-slate-300;
+}
+
 .modal-overlay {
   @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
 }

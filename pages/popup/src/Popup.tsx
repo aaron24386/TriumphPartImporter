@@ -30,15 +30,15 @@ const Popup = () => {
   };
 
   const deleteBasket = async (basketId: string) => {
+    if (currentView !== ViewOptions.BASKET_VIEW) {
+      navigateToView(ViewOptions.BASKET_VIEW);
+    }
+
     const { baskets } = await chrome.storage.local.get('baskets');
     delete baskets[basketId];
     setBasketsById(baskets);
 
     await chrome.storage.local.set({ baskets: baskets });
-
-    if (currentView !== ViewOptions.BASKET_VIEW) {
-      navigateToView(ViewOptions.BASKET_VIEW);
-    }
   };
 
   console.log('basketsById', Object.values(basketsById));

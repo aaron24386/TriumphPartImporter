@@ -16,7 +16,10 @@ const Modal = ({
     <div className={`flex py-1`}>
       <div
         className="modal-overlay"
-        onClick={() => setShowModal(false)}
+        onClick={e => {
+          e.stopPropagation();
+          setShowModal(false);
+        }}
         role="button"
         tabIndex={0}
         onKeyDown={e => {
@@ -40,14 +43,14 @@ const Modal = ({
           <div className="flex justify-center gap-3">
             <button
               className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-800"
-              onClick={() => setShowModal(false)}>
-              tabIndex={0}
+              onClick={() => setShowModal(false)}
+              tabIndex={0}>
               Cancel
             </button>
             <button
               className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
-              onClick={() => deleteBasket(basketId)}>
-              tabIndex={0}
+              onClick={() => deleteBasket(basketId)}
+              tabIndex={0}>
               Confirm
             </button>
           </div>

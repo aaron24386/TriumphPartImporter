@@ -24,12 +24,7 @@ const Basket = ({
     if (!showBasketOptions) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        e.button == 0 &&
-        optionsRef.current &&
-        !optionsRef.current.contains(e.target as Node) &&
-        (e.target as HTMLElement).id !== 'delete-basket-button'
-      ) {
+      if (e.button == 0 && optionsRef.current && !optionsRef.current.contains(e.target as Node)) {
         setShowBasketOptions(false);
       }
     };
@@ -37,11 +32,6 @@ const Basket = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showBasketOptions]);
-
-  const deleteBasketHandler = () => {
-    setShowBasketOptions(false);
-    deleteBasket(basket.id);
-  };
 
   return (
     <div className="relative">
@@ -66,24 +56,26 @@ const Basket = ({
             Import
           </button>
         </div>
-        <div ref={optionsRef} className="w-1/5 flex flex-none justify-center">
-          <button
-            className="dots-button"
-            onClick={e => {
-              e.stopPropagation();
-              setShowBasketOptions(!showBasketOptions);
-            }}>
-            <img
-              src="horizontaldots.svg"
-              alt="horizontal dots"
-              width="30"
-              height="20"
-              className="fill-current hover:bg-gray-100"
-            />
-          </button>
+        <div ref={optionsRef} className="w-1/5 relative">
+          <div className="w-full flex flex-none justify-center">
+            <button
+              className="dots-button"
+              onClick={e => {
+                e.stopPropagation();
+                setShowBasketOptions(!showBasketOptions);
+              }}>
+              <img
+                src="horizontaldots.svg"
+                alt="horizontal dots"
+                width="30"
+                height="20"
+                className="fill-current hover:bg-gray-100"
+              />
+            </button>
+          </div>
+          {showBasketOptions && <BasketOptions deleteBasket={deleteBasket} basket={basket} />}
         </div>
       </div>
-      {showBasketOptions && <BasketOptions deleteBasket={deleteBasketHandler} />}
     </div>
   );
 };

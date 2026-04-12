@@ -8,7 +8,6 @@ const Part = ({ part }: { part: IPart }) => {
       <div className={`w-2/5 flex-none px-1`}>{part.number}</div>
       <div className={`w-2/5 flex-none`}>{part.description}</div>
       <div className={`w-1/5 flex-none`}>{part.quantity}</div>
-      {/* TODO: add a delete/trash button */}
     </div>
   );
 };
